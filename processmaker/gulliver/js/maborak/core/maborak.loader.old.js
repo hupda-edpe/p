@@ -1,2 +1,0 @@
-
-var leimnud = new maborak;

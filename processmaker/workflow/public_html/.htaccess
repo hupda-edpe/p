@@ -1,9 +1,0 @@
-<FilesMatch "\.(htaccess|php|ini|log|sh|inc|bak|config)$">
-        Order Allow,Deny
-        Deny from all
-</FilesMatch>
-
-<FilesMatch "^(app|sysGeneric)\.php$">
-        Order Allow,Deny 
-        Allow from All 
-</FilesMatch>
