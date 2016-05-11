@@ -1,7 +1,0 @@
-[submodule "Unicorn"]
-	path = Unicorn
-	url = git@github.com:bptlab/Unicorn.git
-
-[submodule "Processmaker"]
-	path = Processmaker
-	url = git@github.com:colosa/processmaker.git
