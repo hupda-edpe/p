@@ -1,0 +1,30 @@
+[3 weeks ago] 000ea07  PM-4540 <Paula V. Quispe>
+[3 weeks ago] b0e4cc1  PM-4495 <Paula V. Quispe>
+[3 weeks ago] b0f47c2  PM-4474 <Paula V. Quispe>
+[3 weeks ago] 4934e10  PM-4519 <Paula V. Quispe>
+[3 weeks ago] e635a30  PM-4473 <Paula V. Quispe>
+[3 weeks ago] c4c4804  PM-4513 <Roly Rudy Gutierrez Pinto>
+[3 weeks ago] 68a3ac4  PM-4507 <Paula V. Quispe>
+[3 weeks ago] fc6e131  PM-4514 Adicionar un nuevo metodo para el script de indexación de solr para borrar indice <Herbert Saal>
+[4 weeks ago] d6da449  PM-4473 <Paula V. Quispe>
+[4 weeks ago] 1a99551  PM-4471 No se muestra las unidades en los resultados de KPIs <Dante>
+[4 weeks ago] 21613d4  PM-4472 <jennydmz>
+[4 weeks ago] a0d7263  PM-4460 <Roly Rudy Gutierrez Pinto>
+[4 weeks ago] 9b2faea  completing correction <Dante>
+[4 weeks ago] a6b38d3  PM-4465 Error al mostrar reportes de KPIs <Dante>
+[4 weeks ago] 53096e4  PM-4464: BachRouting> Al eliminar la tabla desde reportable permanece en el listado e Bachrouting generando un error en consola <marcelo.cuiza>
+[4 weeks ago] fc67212  PM-4461 <Paula V. Quispe>
+[4 weeks ago] 9612393  PM-4457 <Paula V. Quispe>
+[4 weeks ago] 721962b  PM-4448 Los permisos asignados al drive de los usuarios no funcionan cuando se tiene habilitado el fexture PMGmail <Dante>
+[4 weeks ago] e302494  PM-4449: Error executing 'workspace-restore': de un ws de la version 2.5.2 a la version 3.0.1.7 <marcelo.cuiza>
+[4 weeks ago] 4c10d0e  PM-4443 <Paula V. Quispe>
+[4 weeks ago] 73eb873  PM-4435: Bandeja Participated no se actualiza cuando se toman casos de la bandeja Unassigned <marcelo.cuiza>
+[4 weeks ago] db52718  PM-4204-A Fix rest declaration for the Report Indicator API <Dante>
+[4 weeks ago] c1c82ff  PM-4441 Cambiar el agrupador --- Processmaker --- <Dante>
+[4 weeks ago] 1a67ea6  PM-4428 <Paula V. Quispe>
+[4 weeks ago] b7c5d50  PM-4412: The row '' in table TASK doesn't exist! - Valeogit ss - Modificar endpoint PUT /:prj_uid/activity/validate-active-cases <marcelo.cuiza>
+[5 weeks ago] 09e346e  Updating .po and .sql files for RC 3.0.1.7 <Julio Cesar Laura>
+[5 weeks ago] 9a35484  Updating .po and .sql files for RC 3.0.1.7 <Julio Cesar Laura>
+[5 weeks ago] 807907f  PM-4421 <Roly Rudy Gutierrez Pinto>
+[5 weeks ago] 067e681  PM-4413 "Cuando se tiene habilitado el timezone, el due date..." SOLVED <Victor Saisa Lopez>
+[5 weeks ago] 2759eb3  PM-4399-3017 "ProcessMaker 3 blocks the download of..." SOLVED <Luis Fernando Saisa Lopez>
