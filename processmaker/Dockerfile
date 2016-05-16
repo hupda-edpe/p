@@ -1,18 +1,51 @@
-FROM debian:7
+FROM php:5.6-apache
 
-RUN apt-get update
+RUN apt-get update && apt-get install -y \
+	curl \
+	libcurl4-openssl-dev \
+	libfreetype6-dev \
+	libjpeg62-turbo-dev \
+	libldap2-dev \
+	libmcrypt-dev \
+	libpng12-dev \
+	libxml2-dev \
+	php5-cli \
+	&& docker-php-ext-install curl \
+	&& docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
+	&& docker-php-ext-install -j$(nproc) gd \
+	&& docker-php-ext-configure ldap --with-libdir=lib/x86_64-linux-gnu \
+	&& docker-php-ext-install ldap \
+	&& docker-php-ext-install -j$(nproc) mcrypt \
+	&& docker-php-ext-install mysql \
+	&& docker-php-ext-install soap
 
-# Install LAMP Stack
-RUN apt-get install mysql-server php5 apache2 php5-mysql php5-gd php5-ldap php5-curl php5-cli php5-mcrypt
+RUN a2enmod deflate && \
+    a2enmod expires && \
+	a2enmod headers && \
+	a2enmod rewrite && \
+	a2enmod vhost_alias && \
+    php5enmod mcrypt
 
+COPY config/php.ini /usr/local/etc/php/
+COPY config/apache2.conf /usr/share/apache2/conf/httpd.conf
 
-# außerdem
-# apt-get install openssh-server phpmyadmin
+RUN chown root:root /usr/share/apache2/conf/httpd.conf
+RUN chmod 622 /usr/share/apache2/conf/httpd.conf
 
-# wie geht man mit den prompts bei der installation um? (mysql, phpmyadmin)
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_SERVERADMIN admin@localhost
+ENV APACHE_SERVERNAME localhost
+# ENV APACHE_SERVERALIAS docker.localhost
+ENV APACHE_DOCUMENTROOT /var/www
 
+COPY src/processmaker/ /opt/processmaker/
+RUN chmod 770 /opt/processmaker/shared
+RUN chmod 770 /opt/processmaker/workflow/engine/config
+RUN chmod 770 /opt/processmaker/workflow/engine/content/languages
+RUN chmod 770 /opt/processmaker/workflow/engine/plugins
+RUN chmod 770 /opt/processmaker/workflow/engine/xmlform
+RUN chmod 770 /opt/processmaker/workflow/engine/js/labels
+RUN chown -R www-data:www-data /opt/processmaker
 
-# und dann noch die ganze konfiguration
-# siehe http://wiki.processmaker.com/3.0/ProcessMaker_Debian_Installation
-
-# ich hab keine ahnung wie das geht :D
+CMD ["/usr/sbin/apache2", "-D",  "FOREGROUND"]

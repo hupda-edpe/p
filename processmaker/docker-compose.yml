@@ -1,0 +1,18 @@
+db:
+    image: mysql
+    restart: always
+    environment:
+        MYSQL_DATABASE: processmaker
+        MYSQL_ROOT_PASSWORD: 123456
+        MYSQL_USER: dev
+        MYSQL_PASSWORD: 123456
+
+processmaker:
+    build: .
+    volumes:
+        - ./src/html:/var/www/html
+        # - ./src/processmaker:/opt/processmaker
+    ports:
+        - '80:80'
+    links:
+        - db
