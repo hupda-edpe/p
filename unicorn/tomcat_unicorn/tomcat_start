@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -o errexit
+set -o nounset
+set -o pipefail
+< /etc/unicorn/conf/unicorn_template.properties \
+	sed "s|{MYSQL_SERVER}|$MYSQL_SERVER|g" |\
+	sed "s|{MYSQL_USER}|$MYSQL_USER|g" |\
+	sed "s|{MYSQL_PASSWORD}|$MYSQL_PASSWORD|g" |\
+cat > /etc/unicorn/conf/unicorn.properties
+< /usr/local/tomcat/conf/tomcat-users-template.xml \
+	sed "s|{TOMCAT_ADMIN_USER}|$TOMCAT_ADMIN_USER|g" |\
+	sed "s|{TOMCAT_ADMIN_PASSWORD}|$TOMCAT_ADMIN_PASSWORD|g" |\
+	sed "s|{TOMCAT_SCRIPT_USER}|$TOMCAT_SCRIPT_USER|g" |\
+	sed "s|{TOMCAT_SCRIPT_PASSWORD}|$TOMCAT_SCRIPT_PASSWORD|g" |\
+cat > /usr/local/tomcat/conf/tomcat-users.xml
+cd /etc/unicorn/
+catalina.sh run

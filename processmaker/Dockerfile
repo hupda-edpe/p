@@ -21,13 +21,15 @@ RUN apt-get update && apt-get install -y \
 
 RUN a2enmod deflate && \
     a2enmod expires && \
-	a2enmod headers && \
-	a2enmod rewrite && \
-	a2enmod vhost_alias && \
+    a2enmod headers && \
+    a2enmod rewrite && \
+    a2enmod vhost_alias && \
+    a2enmod filter && \
     php5enmod mcrypt
 
 COPY config/php.ini /usr/local/etc/php/
 COPY config/apache2.conf /usr/share/apache2/conf/httpd.conf
+COPY config/pmos.conf /etc/apache2/sites-available/pmos.conf
 
 RUN chown root:root /usr/share/apache2/conf/httpd.conf
 RUN chmod 622 /usr/share/apache2/conf/httpd.conf
@@ -40,12 +42,9 @@ ENV APACHE_SERVERNAME localhost
 ENV APACHE_DOCUMENTROOT /var/www
 
 COPY src/processmaker/ /opt/processmaker/
-RUN chmod 770 /opt/processmaker/shared
-RUN chmod 770 /opt/processmaker/workflow/engine/config
-RUN chmod 770 /opt/processmaker/workflow/engine/content/languages
-RUN chmod 770 /opt/processmaker/workflow/engine/plugins
-RUN chmod 770 /opt/processmaker/workflow/engine/xmlform
-RUN chmod 770 /opt/processmaker/workflow/engine/js/labels
-RUN chown -R www-data:www-data /opt/processmaker
+
+CMD ["file_permissions"]
+
+RUN a2ensite pmos.conf
 
 CMD ["/usr/sbin/apache2", "-D",  "FOREGROUND"]

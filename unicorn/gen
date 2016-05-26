@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+set -o errexit
+set -o nounset
+
+random_password() {
+    cat /dev/urandom | tr -dc 'A-Za-z0-9' | fold -w 16 | head -n 1
+}
+
+MYSQL_PASSWORD=$(random_password)
+TOMCAT_ADMIN_PASSWORD=$(random_password)
+TOMCAT_SCRIPT_PASSWORD=$(random_password)
+
+cat <<EOF
+MYSQL_SERVER=mysql:3306
+MYSQL_RANDOM_ROOT_PASSWORD=1
+MYSQL_USER=eap
+MYSQL_PASSWORD=$MYSQL_PASSWORD
+MYSQL_DATABASE=eap_development
+TOMCAT_SERVER=tomcat:8080
+TOMCAT_ADMIN_USER=admin
+TOMCAT_ADMIN_PASSWORD=$TOMCAT_ADMIN_PASSWORD
+TOMCAT_SCRIPT_USER=script
+TOMCAT_SCRIPT_PASSWORD=$TOMCAT_SCRIPT_PASSWORD
+EOF

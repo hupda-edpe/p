@@ -1,0 +1,15 @@
+version: '2'
+services:
+    mysql:
+        image: mysql:5
+        env_file: ENV
+    tomcat:
+        build: tomcat_unicorn/
+        env_file: ENV
+        depends_on:
+            - mysql
+    deploy:
+        build: unicorn_deploy/
+        env_file: ENV
+        depends_on:
+            - tomcat

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -o errexit
+set -o nounset
+set -o pipefail
+
+cd /root
+mkdir -p .m2/
+< unicorn_template.properties \
+	sed "s|{MYSQL_SERVER}|$MYSQL_SERVER|g" |\
+	sed "s|{MYSQL_USER}|$MYSQL_USER|g" |\
+	sed "s|{MYSQL_PASSWORD}|$MYSQL_PASSWORD|g" |\
+cat > unicorn.properties
+< m2_settings_template.xml \
+	sed "s|{TOMCAT_SERVER}|$TOMCAT_SERVER|g" |\
+	sed "s|{TOMCAT_SCRIPT_USER}|$TOMCAT_SCRIPT_USER|g" |\
+	sed "s|{TOMCAT_SCRIPT_PASSWORD}|$TOMCAT_SCRIPT_PASSWORD|g" |\
+cat > .m2/settings.xml
+
+git clone https://github.com/bptlab/Unicorn
+cd Unicorn
+cp ../unicorn.properties .
+unzip jbpt.zip
+mvn -f jbpt/pom.xml clean install
+mvn clean install -DskipTests
+mvn tomcat7:undeploy -DskipTests
+mvn tomcat7:deploy -DskipTests
