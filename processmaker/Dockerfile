@@ -44,6 +44,7 @@ ENV APACHE_DOCUMENTROOT /var/www
 COPY src/processmaker/ /opt/processmaker/
 
 CMD ["file_permissions"]
+RUN chown -R www-data:www-data /opt/processmaker
 
 RUN a2ensite pmos.conf
 
