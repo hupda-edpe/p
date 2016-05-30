@@ -17,7 +17,8 @@ RUN apt-get update && apt-get install -y \
 	&& docker-php-ext-install ldap \
 	&& docker-php-ext-install -j$(nproc) mcrypt \
 	&& docker-php-ext-install mysql \
-	&& docker-php-ext-install soap
+	&& docker-php-ext-install soap \
+	&& docker-php-ext-install pdo pdo_mysql
 
 RUN a2enmod deflate && \
     a2enmod expires && \
