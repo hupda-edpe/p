@@ -1,6 +1,7 @@
 FROM debian
 
 RUN \
+apt-get clean && \
 apt-get update && \
 apt-get install -y git openjdk-7-jdk maven
 COPY unicorn_template.properties m2_settings_template.xml /root/
