@@ -4735,7 +4735,7 @@ INSERT INTO TRANSLATION (TRN_CATEGORY,TRN_ID,TRN_LANG,TRN_VALUE,TRN_UPDATE_DATE 
 ( 'LABEL','ID_MAFE_b1f38dfe86f39ccbd8ab1d89b266fe25','en','- Select a starting task -','2015-12-10') ,
 ( 'LABEL','ID_MAFE_288aae25bc408055f50c21c991903a44','en','Asynchronous','2015-12-10') ,
 ( 'LABEL','ID_MAFE_2fe4167817733fec8e6ba1afddf78f1b','en','Synchronous','2015-12-10') ,
-( 'LABEL','ID_MAFE_0f5ae6bbf3c2244f799acb687894378c','en','The value introduced doesn\''t have the correct format with a vallid prefix (@@, @#, @=)','2015-12-10') ,
+( 'LABEL','ID_MAFE_0f5ae6bbf3c2244f799acb687894378c','en','The value introduced doesn''t have the correct format with a vallid prefix (@@, @#, @=)','2015-12-10') ,
 ( 'LABEL','ID_MAFE_686e697538050e4664636337cc3b834f','en','Create','2015-12-10') ,
 ( 'LABEL','ID_MAFE_7dce122004969d56ae2e0245cb754d35','en','Edit','2015-12-10') ,
 ( 'LABEL','ID_MAFE_49ee3087348e8d44e1feda1917443987','en','Name','2015-12-10') ,
