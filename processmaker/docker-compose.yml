@@ -13,7 +13,7 @@ processmaker:
     build: .
     volumes:
         - ./src/html:/var/www/html
-        # - ./src/processmaker:/opt/processmaker
+        - ./src/processmaker:/opt/processmaker
     ports:
         - '80:80'
     links:

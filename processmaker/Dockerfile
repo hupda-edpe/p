@@ -42,10 +42,13 @@ ENV APACHE_SERVERNAME localhost
 # ENV APACHE_SERVERALIAS docker.localhost
 ENV APACHE_DOCUMENTROOT /var/www
 
-COPY src/processmaker/ /opt/processmaker/
+#COPY src/processmaker/ /opt/processmaker/
 
-CMD ["file_permissions"]
-RUN chown -R www-data:www-data /opt/processmaker
+#CMD ["file_permissions"]
+#RUN chown -R www-data:www-data /opt/processmaker
+
+COPY set_file_permissions.sh /opt/
+RUN chmod 770 /opt/set_file_permissions.sh
 
 RUN a2ensite pmos.conf
 
