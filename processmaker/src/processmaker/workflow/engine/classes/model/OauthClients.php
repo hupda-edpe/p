@@ -182,6 +182,7 @@ class OauthClients extends BaseOauthClients
         $criteriaCount = clone $criteria;
         $criteriaCount->clearSelectColumns();
         $criteriaCount->addSelectColumn("COUNT(" . OauthClientsPeer::CLIENT_ID . ") AS NUM_REC");
+        $criteriaCount->addGroupByColumn("UPPER(". OauthClientsPeer::CLIENT_NAME .")");
 
         $rsCriteriaCount = OauthClientsPeer::doSelectRS($criteriaCount);
         $rsCriteriaCount->setFetchmode(ResultSet::FETCHMODE_ASSOC);
