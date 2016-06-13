@@ -1,39 +1,12 @@
 # Setup
-Run `docker-compose up --build`. This might take a while!
-Maybe you have to run `docker exec <Name of processmaker container> /opt/set_file_permissions.sh` to set the correct file permissions. This will change the permissions of your local files too! So beware of possible security problems.
-Also, it should be enough to do this only after the first time building the image. For later rebuild the permissions are already set.
+Run `docker-compose up --build`. This might take a while!  
+Then you have to run `docker exec <Name of processmaker container> /opt/set_file_permissions.sh` to set the correct file permissions. This will change the permissions of your local files too! So beware of possible security problems.  
 
-After that, go to your browser and type the IP of your Docker. Probably `192.168.99.100` or somewhere along those lines. 
+After that, go to your browser and type the IP of your Docker. Probably `192.168.99.100` or somewhere along those lines.  
 
-You will get a Processmaker setup. Most of them is pretty staight forward. The db config part is where it gets a little tricky: Instead of `localhost` use the Docker IP (see above) and put the password given in the `docker-compose.yml` under `MYSQL_ROOT_PASSWORD`. Write down the name of the database! (Default is `wf_workflow`.) 
+You will get a Processmaker setup. Most of them is pretty staight forward. The db config part is where it gets a little tricky: Instead of `localhost` use the Docker IP (see above) and put the password given in the `docker-compose.yml` under `MYSQL_ROOT_PASSWORD`. Write down the name of the database! (Default is `wf_workflow`.)  
 
-If this is the first time you setup PM you should *not* be able to login. This is because the PM setup process doesn't fill all the necessary DB tables. Therefore: SSH into the db container, enter `mysql -u root -p` Enter the passphrase (default: 123456). Type `USE wf_workflow;` or whatever the name of the database was earlier. Copy and paste the following code:
-
-```
-INSERT INTO `RBAC_PERMISSIONS` VALUES
-('00000000000000000000000000000001','PM_LOGIN','2007-08-03 12:24:36','2007-08-03 12:24:36',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000002','PM_SETUP','2007-08-03 12:24:36','2007-08-03 12:24:36',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000003','PM_USERS','2007-08-03 12:24:36','2007-08-03 12:24:36',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000004','PM_FACTORY','2007-08-03 12:24:36','2007-08-03 12:24:36',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000005','PM_CASES','2007-08-03 12:24:36','2007-08-03 12:24:36',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000006','PM_ALLCASES','2008-04-30 00:00:00','2008-04-30 00:00:00',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000008','PM_REPORTS','2008-05-12 00:00:00','2008-05-12 00:00:00',0,'00000000000000000000000000000002'),
-('00000000000000000000000000000007','PM_REASSIGNCASE','2008-05-02 18:16:29','2008-05-02 18:16:29',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000009','PM_SUPERVISOR','0000-00-00 00:00:00','0000-00-00 00:00:00',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000010','PM_SETUP_ADVANCE','0000-00-00 00:00:00','0000-00-00 00:00:00',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000011','PM_DASHBOARD','2009-02-18 00:00:00','2009-02-18 00:00:00',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000012','PM_WEBDAV','2009-08-21 00:00:00','2009-08-21 00:00:00',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000013','PM_DELETECASE','2009-10-12 00:00:00','0000-00-00 00:00:00',0,'00000000000000000000000000000002'),
-('00000000000000000000000000000014','PM_EDITPERSONALINFO','2009-10-12 00:00:00','0000-00-00 00:00:00',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000015','PM_FOLDERS_VIEW','2009-10-12 00:00:00','0000-00-00 00:00:00',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000016','PM_FOLDERS_ADD_FOLDER','2009-10-12 00:00:00','0000-00-00 00:00:00',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000017','PM_FOLDERS_ADD_FILE','2009-10-12 00:00:00','0000-00-00 00:00:00',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000018','PM_CANCELCASE','2011-12-11 00:00:00','2011-12-11 00:00:00',1,'00000000000000000000000000000002'),
-('00000000000000000000000000000019','PM_FOLDER_DELETE','2011-12-11 00:00:00','2011-12-11 00:00:00',1,'00000000000000000000000000000002');
-```
-
-Type `quit;` and then `exit`. Go back to your browser and log in. You're all done. 
-
-
-# TODOs
-Also dynamic code for processmaker should probably be enabled. The line is currently commented out in the `docker-compose.yml` file. 
+# Rebuild
+Before rebuilding, you have to claim ownership of the processmaker source again, because certain files are created by processmaker and therefore are not accessible by docker-compose.  
+Simply `run chown -R <your username> src/processmaker` and you are ready to go.  
+Another way could be to run docker-compose with sudo.
