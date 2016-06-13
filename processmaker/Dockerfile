@@ -35,6 +35,8 @@ COPY config/pmos.conf /etc/apache2/sites-available/pmos.conf
 RUN chown root:root /usr/share/apache2/conf/httpd.conf
 RUN chmod 622 /usr/share/apache2/conf/httpd.conf
 
+RUN usermod -u 1000 www-data
+
 ENV APACHE_RUN_USER www-data
 ENV APACHE_RUN_GROUP www-data
 ENV APACHE_SERVERADMIN admin@localhost
