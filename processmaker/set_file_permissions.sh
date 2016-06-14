@@ -8,4 +8,4 @@ cd workflow/engine/
 
 chmod -R 770 config content/languages plugins xmlform js/labels
 
-chown -R :www-data /opt/processmaker
+chgrp -R www-data /opt/processmaker
