@@ -1,8 +1,10 @@
 # Usage
-docker build -t=testcase .
-docker run -ti testcase python
+Build and run Docker image:  
+`docker build -t=testcase .`  
+`docker run -ti testcase python`
 
-from testcase import *
+When in interactive Python console, import client functions:  
+`from testcase import *`
 
-play with interactive python and given functions.
+Feel free to play around with given functions and simulate the flow of a REST client.  
 e.g. "r = getAccessToken()" (which is the only function tested yet...)
