@@ -10,7 +10,7 @@ class ProcessmakerWrapper:
     self.c = config
     self.base_url = "http://{host}/api/1.0/{workspace}" \
       .format(host=self.c.PM_HOST, workspace=self.c.PM_WORKSPACE)
-    self.auth = self.genAuthHeader():
+    self.auth = self.genAuthHeader()
     self.updateProcessData()
 
   def pushInitial(self, uid):
@@ -20,7 +20,7 @@ class ProcessmakerWrapper:
 
     # put some required variables in case..
 
-    self.routeCase(case_uid)
+    return self.routeCase(case_uid)
 
   def pullIntermediate(self):
     # get case inbox (GET /cases)
@@ -31,6 +31,7 @@ class ProcessmakerWrapper:
     # (maybe) pause case (PUT /cases/app_uid/pause)
     # or send to draft (happens automatically,
     # when some step of current task in case is completed)
+    pass
 
   def pushIntermediate(self, case_uid):
     # case_uid should be saved somewhere
@@ -38,10 +39,12 @@ class ProcessmakerWrapper:
     # set variables and stuff
     # maybe unpause case
     # route case
+    pass
 
   def pullFinished(self):
     # seems to only work like pullIntermediate
     # -> task at the end of process, assigned to unicorn user
+    pass
 
 
   def genAuthHeader(self):
@@ -89,7 +92,7 @@ class ProcessmakerWrapper:
       .format(base=self.base_url, prj_uid=process_uid)
     r = requests.get(url, headers=self.auth)
     # TODO Exception- and Error-Code-handling
-    return [{"uid": tsk["act_uid"], "name": tsk["act_uid"], "process": process_uid} for tsk in r.json()]
+    return [{"uid": tsk["act_uid"], "name": tsk["act_name"], "process": process_uid} for tsk in r.json()]
 
   def startCase(self, task):
     url = "{base}/cases".format(base=self.base_url)
