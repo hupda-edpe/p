@@ -1,0 +1,10 @@
+{
+    "PM_HOST":       "127.17.0.4",
+    "PM_WORKSPACE":  "workflow",
+    "PM_USER":       "unicorn",
+    "PM_PW":         "123456",
+    "CLIENT_ID":     "UCYFOVTKROBJVFWYBWJRQIPWFUNBZCAT",
+    "CLIENT_SECRET": "189803135575f01c37fb0b7099422018",
+    "API_PROTOCOL":  "http://",
+    "API_URL":       "/api/1.0"
+}
