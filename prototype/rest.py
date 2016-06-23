@@ -68,7 +68,7 @@ class Rest(object):
         return requests.get(url, headers=header)
 
     def post(self, url, header, payload):
-        return requests.post(url, header, payload)
+        return requests.post(url, headers=header, data=payload)
 
     def put(self, url, header):
         return requests.put(url, headers=header)
