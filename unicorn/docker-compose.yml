@@ -1,15 +1,19 @@
-version: '2'
-services:
-    mysql:
-        image: mysql:5
-        env_file: ENV
-    tomcat:
-        build: tomcat_unicorn/
-        env_file: ENV
-        depends_on:
-            - mysql
-    deploy:
-        build: unicorn_deploy/
-        env_file: ENV
-        depends_on:
-            - tomcat
+mysql:
+    image: mysql:5
+    environment:
+      MYSQL_SERVER: mysql:3306
+      MYSQL_ROOT_PASSWORD: 123456
+    volumes:
+      - ./config:/docker-entrypoint-initdb.d/
+tomcat:
+    build: .
+    environment:
+      TOMCAT_SERVER: tomcat:8080
+      TOMCAT_ADMIN_USER: admin
+      TOMCAT_ADMIN_PASSWORD: 123456
+      TOMCAT_SCRIPT_USER: script
+      TOMCAT_SCRIPT_PASSWORD: 123456
+    links:
+      - mysql
+    ports:
+      - "8080:8080"
