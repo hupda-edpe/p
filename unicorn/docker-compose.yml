@@ -13,6 +13,8 @@ tomcat:
       TOMCAT_ADMIN_PASSWORD: 123456
       TOMCAT_SCRIPT_USER: script
       TOMCAT_SCRIPT_PASSWORD: 123456
+    volumes:
+      - ./src:/usr/local/tomcat/webapps/
     links:
       - mysql
     ports:
