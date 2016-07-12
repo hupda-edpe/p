@@ -1,0 +1,7 @@
+<a href="/">Index</a>
+{% if ok %}
+  <p>Authorized via Token: {{ token }}</p>
+{% else %}
+  <p>Something wen't wrong:</p>
+  {{ errormsg }}
+{% endif %}
