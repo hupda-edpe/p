@@ -1,3 +1,2 @@
-db_config.py
-pm_config.py
+pmucon/config/*.py
 *.pyc
