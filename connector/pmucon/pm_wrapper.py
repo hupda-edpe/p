@@ -1,8 +1,9 @@
 #! python
 
 import requests
-from pmucon import pm_config, rest
+from pmucon.config import pm_config
 from pmucon.models import PendingEvent
+from pmucon import rest
 
 class PMWrapper:
   """Wrapper-Class for the Processmaker API"""

@@ -3,7 +3,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
 
-from pmucon import pm_config, pm_wrapper, unicorn_wrapper
+from pmucon import pm_wrapper, unicorn_wrapper
+from pmucon.config import pm_config
 from pmucon.models import PendingEvent
 import requests
 import json
