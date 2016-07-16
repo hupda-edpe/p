@@ -5,6 +5,8 @@ mysql:
       MYSQL_ROOT_PASSWORD: 123456
     volumes:
       - ./config:/docker-entrypoint-initdb.d/
+    ports:
+      - "3306:3306"
 tomcat:
     build: .
     environment:
