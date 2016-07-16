@@ -9,23 +9,27 @@ class PendingEvent(models.Model):
 class EventType(models.Model):
   et_name = models.CharField(max_length=200)
 
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+    self.elements = self.eventtypeelement_set
+
   def to_xml(self):
     xml = """<?xml version="1.0" encoding="utf-8"?>
-      <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="{et_name}.xsd" targetNamespace="{et_name}.xsd" elementFormDefault="qualified">
-        <xs:element name="{et_name}">
-          <xs:complexType>
-            <xs:sequence>""".format(et_name=self.et_name)
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="{et_name}.xsd" targetNamespace="{et_name}.xsd" elementFormDefault="qualified">
+  <xs:element name="{et_name}">
+    <xs:complexType>
+      <xs:sequence>""".format(et_name=self.et_name)
 
-    for el in self.event_type_element_set.all()
-      xml += "\n" + el.to_xml()
+    for el in self.elements.all():
+      xml += "\n        " + el.to_xml()
 
     xml += """
-            </xs:sequence>
-          </xs:complexType>
-        </xs:element>
-      </xs:schema>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>
     """
-    
+
     return xml
 
 class EventTypeElement(models.Model):
