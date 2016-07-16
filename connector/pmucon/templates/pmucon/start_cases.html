@@ -1,0 +1,8 @@
+{% for prj in projects %}
+<h3>Project {{ prj.name }}<h3>
+  <ul>
+  {% for tsk in prj.tasks %}
+    <li> {{ tsk.name }} </li>
+  {% endfor %}
+  </ul>
+{% endfor %}

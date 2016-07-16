@@ -1,0 +1,9 @@
+
+{% for case in events %}
+<ul>
+  <li>App_uid: {{ case.app_uid }}</li>
+  <li>Status: {{ case.status }}</li>
+  <li><a href="/postevent/{{ case.app_uid }}/">Push to Unicorn</a></li>
+  <li><a href="/routecase/{{ case.app_uid }}/">Route case in Processmaker</a></li>
+</ul>
+{% endfor %}
