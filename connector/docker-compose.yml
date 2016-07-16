@@ -7,10 +7,10 @@ services:
       MYSQL_DATABASE: django_db
       MYSQL_USER: django
       MYSQL_PASSWORD: 123456
-#  web:
-#    build: .
-#    command: python manage.py runserver 0.0.0.0:8000
-#    volumes:
-#      - .:/code
-#    depends_on:
-#      - db
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    depends_on:
+      - db
