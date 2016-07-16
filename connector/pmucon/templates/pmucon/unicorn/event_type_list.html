@@ -7,6 +7,7 @@
 <p style="font-weight: bold">{{ event_type.et_name }}</p>
 <ul>
   <li><a href="{% url 'show_event_type' event_type.id %}">Show</a></li>
-  <li><a href="{% url 'show_event_type' event_type.id %}">Delete</a></li>
+  <li><a href="{% url 'edit_event_type' event_type.id %}">Edit</a></li>
+  <li><a href="{% url 'delete_event_type' event_type.id %}">Delete</a></li>
 </ul>
 {% endfor %}

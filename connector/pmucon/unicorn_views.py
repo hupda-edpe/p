@@ -11,33 +11,21 @@ import json
 
 def list_event_types(req):
   context = {
-    "event_type_list" = EventType.objects.all()
+    "event_type_list": EventType.objects.all()
   }
+  return render(req, "pmucon/unicorn/event_type_list.html", context)
 
-  return render(req, "pmucon/unicorn/list_event_types.html", context)
+def show_event_type(req, et_id):
+  context = {
+    "event_type": get_object_or_404(EventType, pk=et_id)
+  }
+  return render(req, 'pmucon/unicorn/event_type.html', context)
 
 
-def event_type(req, et_id):
-  et = get_object_or_404(EventType, pk=et_id)
-
+def edit_event_type(req, et_id):
   pass
 
-def new_event_type_element(req, et_id)
-  
 
+def delete_event_type(req, et_id):
+  pass
 
-@csrf_exempt
-def catchMatch(req):
-  j = json.loads(req.body)
-
-  if PendingEvent.objects.filter(app_uid=j["AppUid"]).exists():
-    pe = PendingEvent.objects.get(app_uid=j["AppUid"])
-    pe.delete()
-
-  ok, pm_token = genAuthTok(req)
-  pmw = pm_wrapper.PMWrapper(pm_token)
-
-  r = pmw.routeCase(j["AppUid"])
-
-
-  return HttpResponse("")

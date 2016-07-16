@@ -16,14 +16,21 @@ Including another URLconf
 from django.conf.urls import url
 
 from . import views
+from . import unicorn_views
 
 urlpatterns = [
-    url(r'^$', views.index, name='index'),
-    url(r'^pmauth/', views.pmAuth, name='pmauth'),
-    url(r'^startcases/', views.listStartCases, name='startcases'),
-    url(r'^pullcases/', views.pullCases, name='pullcases'),
-    url(r'^postevent/(?P<app_uid>[0-9a-zA-Z]+)/', views.postEvent, name='postevent'),
-    url(r'^catch/', views.catchMatch, name='catch'),
-    url(r'^routecase/(?P<app_uid>[0-9a-zA-Z]+)/', views.routeCase, name='routecase'),
-    url(r'^deletecases/', views.deleteCases, name='deletecases')
+  url(r'^$', views.index, name='index'),
+
+  url(r'^pmauth/?$',                              views.pmAuth,         name='pmauth'),
+  url(r'^startcases/?$',                          views.listStartCases, name='startcases'),
+  url(r'^pullcases/?$',                           views.pullCases,      name='pullcases'),
+  url(r'^postevent/(?P<app_uid>[0-9a-zA-Z]+)/?$', views.postEvent,      name='postevent'),
+  url(r'^catch/?$',                               views.catchMatch,     name='catch'),
+  url(r'^routecase/(?P<app_uid>[0-9a-zA-Z]+)/?$', views.routeCase,      name='routecase'),
+  url(r'^deletecases/?$',                         views.deleteCases,    name='deletecases'),
+
+  url(r'^event_types/?$',                         unicorn_views.list_event_types,  name='list_event_types'),
+  url(r'^event_type/(?P<et_id>[0-9]+)/?$',        unicorn_views.show_event_type,   name='show_event_type'),
+  url(r'^event_type/(?P<et_id>[0-9]+)/edit/?$',   unicorn_views.edit_event_type,   name='edit_event_type'),
+  url(r'^event_type/(?P<et_id>[0-9]+)/delete/?$', unicorn_views.delete_event_type, name='delete_event_type')
 ]
