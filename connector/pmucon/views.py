@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 
 
@@ -77,21 +76,6 @@ def postEvent(req, app_uid):
       ok = True
   return render(req, "pmucon/post_event.html", {"ok": ok})
 
-@csrf_exempt
-def catchMatch(req):
-  j = json.loads(req.body)
-
-  if PendingEvent.objects.filter(app_uid=j["AppUid"]).exists():
-    pe = PendingEvent.objects.get(app_uid=j["AppUid"])
-    pe.delete()
-
-  ok, pm_token = genAuthTok(req)
-  pmw = pm_wrapper.PMWrapper(pm_token)
-
-  r = pmw.routeCase(j["AppUid"])
-
-
-  return HttpResponse("")
 
 def routeCase(req, app_uid):
   pm_token = req.session.get("pm_access_token")
