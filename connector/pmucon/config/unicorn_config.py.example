@@ -1,3 +1,7 @@
 #! Python
 
-URL = "http://172.18.0.3:8080/Unicorn/webapi/REST/"
+PROTOCOL = "http://"
+HOST = "172.18.0.3"
+PATH = "/Unicorn/webapi/REST/"
+
+URL = PROTOCOL+HOST+PATH
