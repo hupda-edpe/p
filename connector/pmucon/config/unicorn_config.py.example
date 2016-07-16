@@ -2,6 +2,7 @@
 
 PROTOCOL = "http://"
 HOST = "172.18.0.3"
+PORT = "8080"
 PATH = "/Unicorn/webapi/REST/"
 
-URL = PROTOCOL+HOST+PATH
+URL = PROTOCOL+HOST+":"+PORT+PATH
