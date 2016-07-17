@@ -24,6 +24,7 @@ class EventType(models.Model):
       xml += "\n        " + el.to_xml()
 
     xml += """
+        <xs:element name="Timestamp" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
       </xs:sequence>
     </xs:complexType>
   </xs:element>

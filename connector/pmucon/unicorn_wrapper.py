@@ -1,28 +1,39 @@
+from pmucon.config import unicorn_config
+
 import requests, json
-#from pmucon import unicorn_config
-URL = "http://172.18.0.3:8080/Unicorn/webapi/REST/"
 
-def postEventType():
-  xml = """<?xml version="1.0" encoding="utf-8"?>
-    <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="ProcessmakerEvent.xsd" targetNamespace="ProcessmakerEvent.xsd" elementFormDefault="qualified">
-      <xs:element name="ProcessmakerEvent">
-        <xs:complexType>
-          <xs:sequence>
-          <xs:element name="AppUid" type="xs:string" minOccurs="1" maxOccurs="1" />
-          <xs:element name="Timestamp" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
-          </xs:sequence>
-        </xs:complexType>
-      </xs:element>
-    </xs:schema>
-  """
 
+############### EVENT TYPES ##################
+
+def syncEventType(event_type):
+  if not event_type.to_xml() == getEventType(event_type):
+    deleteEventType(event_type)
+    postEventType(event_type).raise_for_status()
+
+def postEventType(event_type):
   payload = {
-    "xsd": xml,
-    "schemaName": "ProcessmakerEvent",
+    "xsd": event_type.to_xml(),
+    "schemaName": event_type.et_name,
     "timestampName": "Timestamp"
   }
+  return requests.post(unicorn_config.URL + "EventType", headers={"content-type": "application/json"}, data=json.dumps(payload))
 
-  return requests.post(URL + "EventType", headers={"content-type": "application/json"}, data=json.dumps(payload))
+def getEventType(event_type):
+  name = event_type.et_name
+  resp = requests.get(unicorn_config.URL + "EventType/" + name)
+  if resp.status_code == 200:
+    return resp.text
+  else:
+    return None
+
+def deleteEventType(event_type):
+  name = event_type.et_name
+  resp = requests.delete(unicorn_config.URL + "EventType/" + name)
+
+
+################ EVENTS #######################
+
+
 
 def postEvent(app_uid):
 
@@ -33,7 +44,7 @@ def postEvent(app_uid):
     </cpoi>
   """.format(appuid=app_uid)
 
-  return requests.post(URL + "Event", data=event)
+  return requests.post(unicorn_config.URL + "Event", data=event)
 
 def postQuery():
   queryString = "SELECT * FROM ProcessmakerEvent"
@@ -48,7 +59,7 @@ def postQuery():
     "notificationPath": notificationPath
   }
 
-  return requests.post(URL + "EventQuery/REST", headers={"content-type": "application/json"}, data=json.dumps(payload))
+  return requests.post(unicorn_config.URL + "EventQuery/REST", headers={"content-type": "application/json"}, data=json.dumps(payload))
 
 def parseQueryMatch(qm):
   pass
