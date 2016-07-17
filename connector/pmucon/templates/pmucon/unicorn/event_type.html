@@ -1,10 +1,10 @@
 <h1>Unicorn Event Type</h1>
 <h2>{{ event_type.et_name }}</h2>
-<textarea readonly>{{ event_type.to_xml() }}</textarea>
+<textarea readonly>{{ xml }}</textarea>
 
 <h3>Elemente</h3>
 <ul>
-{% for el in event_type.elements.all() %}
+{% for el in elements %}
   <li>{{ el.el_name }}</li>
 {% endfor %}
 </ul>
