@@ -5,21 +5,7 @@ from pmucon import pm_wrapper, unicorn_wrapper
 
 
 def list_cases(req):
-  if req.GET.get('action','') == 'push':
-    if req.GET.get('case', '') == 'all':
-      cases = Case.objects.filter(status='new')
-      for case in cases:
-        push_case(case)
-    else:
-      case = get_object_or_404(Case, pk=req.GET.get('case', ''))
-      push_case(case)
-  elif req.GET.get('action','') == 'route':
-      case = get_object_or_404(Case, pk=req.GET.get('case', ''))
-      pm_wrapper.PMWrapper().routeCase(case.app_uid)
-      case.status = 'routed'
-      case.save()
-
-  pm_wrapper.PMWrapper().pullIntermediate()
+  pm_wrapper.pull_cases()
 
   cases = Case.objects.all()
   context = {
@@ -27,11 +13,40 @@ def list_cases(req):
   }
   return render(req, 'pmucon/processmaker/list_cases.html', context)
 
-def push_case(case):
-  ev = Event(schema=case.event, app_uid=case.app_uid)
+def push_all(req):
+  cases = Case.objects.filter(status='new')
+  for case in cases:
+    push(case)
+  return list_cases(req)
+
+def push_case(req, case_id):
+  case = get_object_or_404(Case, pk=case_id)
+  push(case)
+  return list_cases(req)
+
+def route_case(req, case_id):
+  case = get_object_or_404(Case, pk=case_id)
+  pm_wrapper.route_case(case)
+  case.status = 'routed'
+  case.save()
+  return list_cases(req)
+
+def delete_case(req, case_id):
+  case = get_object_or_404(Case, pk=case_id)
+  case.delete()
+  return list_cases(req)
+
+
+def push(case):
+  event_type = get_object_or_404(EventType, et_name=case.event_type)
+  variables = pm_wrapper.get_variables(case)
+
+  event_vars = [EventVariable(name=elem.el_name, value=variables[elem.el_name]) for elem in event_type.elements.all()]
+
+  ev = Event(schema=case.event_type, app_uid=case.app_uid, variables=event_vars)
   
   if not case.waiting:
-    pm_wrapper.PMWrapper().routeCase(case.app_uid)
+    pm_wrapper.route_case(case)
     case.status = 'routed'
   elif case.status == 'new':
     case.status = 'pushed'

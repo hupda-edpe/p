@@ -24,6 +24,7 @@ class EventType(models.Model):
       xml += "\n        " + el.to_xml()
 
     xml += """
+        <xs:element name="AppUid" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="Timestamp" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
       </xs:sequence>
     </xs:complexType>
@@ -84,7 +85,7 @@ class EventQuery(models.Model):
 class Case(models.Model):
   name = models.CharField(max_length=128)
   app_uid = models.CharField(max_length=128)
-  event = models.CharField(max_length=128)
+  event_type = models.CharField(max_length=128)
   status = models.CharField(max_length=128)
   waiting = models.BooleanField()
 

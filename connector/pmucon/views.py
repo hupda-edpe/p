@@ -12,11 +12,7 @@ import requests
 import json
 
 def index(req):
-  context = {
-    "pm_access_token": req.session.get("pm_access_token")
-  }
-
-  return render(req, "pmucon/index.html", context)
+  return render(req, "pmucon/index.html")
 
 
 def listStartCases(req):
@@ -34,16 +30,6 @@ def listStartCases(req):
   }
 
   return render(req, "pmucon/start_cases.html", context)
-
-
-def routeCase(req, app_uid):
-  pm_token = req.session.get("pm_access_token")
-  pmw = pm_wrapper.PMWrapper(pm_token)
-
-  r = pmw.routeCase(app_uid)
-
-  return HttpResponse("routed")
-
 
 
     

@@ -14,7 +14,7 @@ td,th {
 <p><a href="/">Index</a></p>
 
 <p><a href="{% url 'cases' %}">Pull again</a></p>
-<p><a href="{% url 'cases' %}">Push all cases</a></p>
+<p><a href="{% url 'push_all' %}">Push all cases</a></p>
 
 <h2>Cases:</h2>
 
@@ -23,9 +23,9 @@ td,th {
 <th>Name</th>
 <th>app_uid</th>
 <th>Status</th>
-<th>Event</th>
+<th>Event Type</th>
 <th>Wait</th>
-<th colspan="2">Actions</th>
+<th colspan="3">Actions</th>
 </tr>
 
 {% for case in cases %}
@@ -33,10 +33,11 @@ td,th {
 <td>{{ case.name }}</td>
 <td>{{ case.app_uid }}</td>
 <td>{{ case.status }}</td>
-<td>{{ case.event }}</td>
+<td>{{ case.event_type }}</td>
 <td>{{ case.waiting }}</td>
-<td><a href="{% url 'cases' %}?action=push&case={{ case.id }}">Push</a></td>
-<td><a href="{% url 'cases' %}">Route</a></td>
+<td><a href="{% url 'push_case' case.id %}">Push</a></td>
+<td><a href="{% url 'route_case' case.id %}">Route</a></td>
+<td><a href="{% url 'delete_case' case.id %}">Delete</a></td>
 </tr>
 
 {% endfor %}

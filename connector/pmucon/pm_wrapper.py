@@ -5,6 +5,34 @@ import json
 from pmucon.models import Case, CaseVariable
 from pmucon import pm_rest
 
+def pull_cases():
+  cases = pm_rest.get('cases')
+  for case in cases:
+    if not Case.objects.filter(app_uid=case['app_uid']).exists():
+      tas_uid = case['tas_uid']
+      pro_uid = case['pro_uid']
+      task = pm_rest.get('project/'+pro_uid+'/activity/'+tas_uid)
+      props = json.loads(task['properties']['tas_description'])
+
+      case_obj = Case(
+        name    = case['app_tas_title'],
+        app_uid = case['app_uid'],
+        waiting = props['waiting'],
+        event_type   = props['event_type'],
+        status  = 'new')
+      case_obj.save()
+
+def route_case(case):
+  endpoint = "/cases/{app_uid}/route-case".format(app_uid = case.app_uid)
+  pm_rest.put(endpoint)
+
+def get_variables(case):
+  endpoint = '/cases/{app_uid}/variables'.format(app_uid = case.app_uid)
+  return pm_rest.get(endpoint)
+
+
+
+
 class PMWrapper:
   """Wrapper-Class for the Processmaker API"""
 
@@ -31,7 +59,7 @@ class PMWrapper:
           name    = case['app_tas_title'],
           app_uid = case['app_uid'],
           waiting = props['waiting'],
-          event   = props['event'],
+          event_type   = props['event_type'],
           status  = 'new')
         case_obj.save()
 
