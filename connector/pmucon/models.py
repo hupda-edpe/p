@@ -24,7 +24,10 @@ class EventType(models.Model):
       xml += "\n        " + el.to_xml()
 
     xml += """
-        <xs:element name="AppUid" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="Mode" type="xs:string" minOccurs="1" maxOccurs="1" />
+        <xs:element name="AppUid" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="ProUid" type="xs:string" minOccurs="0" maxOccurs="1" />
+        <xs:element name="TasUid" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="Timestamp" type="xs:dateTime" minOccurs="1" maxOccurs="1" />
       </xs:sequence>
     </xs:complexType>

@@ -30,8 +30,17 @@ def get_variables(case):
   endpoint = '/cases/{app_uid}/variables'.format(app_uid = case.app_uid)
   return pm_rest.get(endpoint)
 
+def set_variables(case, variables):
+  endpoint = '/cases/{app_uid}/variable'.format(app_uid = case.app_uid)
+  return pm_rest.put(endpoint, variables)
 
-
+def start_task(pro_uid, tas_uid):
+  payload = {
+      "pro_uid": pro_uid,
+      "tas_uid": tas_uid
+  }
+  r = pm_rest.post('cases', payload)
+  return r["app_uid"]
 
 class PMWrapper:
   """Wrapper-Class for the Processmaker API"""

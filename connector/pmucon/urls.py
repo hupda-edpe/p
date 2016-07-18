@@ -18,14 +18,15 @@ from django.conf.urls import url
 from . import views, unicorn_views, pm_views
 
 urlpatterns = [
-  url(r'^$', views.index, name='index'),
+  url(r'^$',        views.index,      name='index'),
+  url(r'^catch/?$', views.catchMatch, name='catch'),
+
 
   url(r'^cases/?$',                            pm_views.list_cases,  name='cases'),
   url(r'^cases/push/?$',                       pm_views.push_all,    name='push_all'),
   url(r'^cases/(?P<case_id>[0-9]+)/push/?$',   pm_views.push_case,   name='push_case'),
   url(r'^cases/(?P<case_id>[0-9]+)/route/?$',  pm_views.route_case,  name='route_case'),
   url(r'^cases/(?P<case_id>[0-9]+)/delete/?$', pm_views.delete_case, name='delete_case'),
-
 
 
   url(r'^event_type/?$',                          unicorn_views.list_event_types, name='list_event_types'),
@@ -52,7 +53,6 @@ urlpatterns = [
   url(r'^startcases/?$',                          views.listStartCases, name='startcases'),
   url(r'^pullcases/?$',                           views.pullCases,      name='pullcases'),
   url(r'^postevent/(?P<app_uid>[0-9a-zA-Z]+)/?$', views.postEvent,      name='postevent'),
-  url(r'^catch/?$',                               views.catchMatch,     name='catch'),
   url(r'^routecase/(?P<app_uid>[0-9a-zA-Z]+)/?$', views.routeCase,      name='routecase'),
   url(r'^deletecases/?$',                         views.deleteCases,    name='deletecases'),
 """

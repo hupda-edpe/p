@@ -1,5 +1,5 @@
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse
 
 
@@ -7,7 +7,7 @@ from pmucon import pm_wrapper, unicorn_wrapper
 
 
 from pmucon.config import pm_config
-from pmucon.models import Case, Event, EventVariable
+from pmucon.models import *
 import requests
 import json
 
@@ -35,16 +35,18 @@ def listStartCases(req):
     
 @csrf_exempt
 def catchMatch(req):
-  j = json.loads(req.body)
+  jsn = json.loads(req.body)
 
-  if PendingEvent.objects.filter(app_uid=j["AppUid"]).exists():
-    pe = PendingEvent.objects.get(app_uid=j["AppUid"])
-    pe.delete()
-
-  ok, pm_token = genAuthTok(req)
-  pmw = pm_wrapper.PMWrapper(pm_token)
-
-  r = pmw.routeCase(j["AppUid"])
-
+  if jsn['Mode'] == 'App':
+    app_uid = jsn['AppUid']
+    case = get_object_or_404(Case, app_uid = app_uid)
+    if not case.status == 'routed'
+      pm_wrapper.route_case(case)
+      case.status = 'routed'
+      case.save()
+  elif: jsn['Mode'] == 'Task':
+    pro_uid = jsn['ProUid']
+    tas_uid = jsn['TasUid']
+    pm_wrapper.start_task(pro_uid, tas_uid)
 
   return HttpResponse("")

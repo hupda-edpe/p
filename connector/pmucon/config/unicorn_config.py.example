@@ -1,8 +1,10 @@
 #! Python
 
 PROTOCOL = "http://"
-HOST = "172.18.0.3"
+HOST = "172.17.0.1"
 PORT = "8080"
 PATH = "/Unicorn/webapi/REST/"
 
 URL = PROTOCOL+HOST+":"+PORT+PATH
+
+CALLBACK = "http://172.19.0.1:8000/catch"

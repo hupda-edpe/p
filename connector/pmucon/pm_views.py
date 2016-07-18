@@ -52,4 +52,6 @@ def push(case):
     case.status = 'pushed'
   
   case.save()
+  print("jetzt post")
   unicorn_wrapper.postEvent(ev)
+  print("post fertig")

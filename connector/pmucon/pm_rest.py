@@ -11,8 +11,8 @@ def get(endpoint):
 def post(endpoint, payload):
   return request('post', endpoint, payload)
 
-def put(endpoint):
-  return request('put', endpoint)
+def put(endpoint, payload=''):
+  return request('put', endpoint, payload)
 
 
 def request(method, endpoint, payload=''):
@@ -25,7 +25,7 @@ def request(method, endpoint, payload=''):
   elif(method is 'post'):
     r = requests.post(url, headers=pm_auth.get_auth_hdr(), data=payload)
   elif(method is 'put'):
-    r = requests.put(url, headers=pm_auth.get_auth_hdr())
+    r = requests.put(url, headers=pm_auth.get_auth_hdr(), data=payload)
   else:
     raise Exception("No valid HTTP function was given. \"{method}\" Aborting." \
       .format(method = method))

@@ -43,7 +43,6 @@ def postEventQuery(query):
   payload = {
     "queryString": query.query_string,
     "title": query.title,
-    "email": query.email,
     "notificationPath": unicorn_config.CALLBACK
   }
   r = requests.post(unicorn_config.URL + "EventQuery/REST", headers={"content-type": "application/json"}, data=json.dumps(payload))
