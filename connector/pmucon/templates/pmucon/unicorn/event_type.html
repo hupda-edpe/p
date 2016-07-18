@@ -1,10 +1,17 @@
 <h1>Unicorn Event Type</h1>
+
+<a href="{% url 'list_event_types' %}">Back to list</a>
+
 <h2>{{ event_type.et_name }}</h2>
-<textarea readonly>{{ xml }}</textarea>
+<textarea readonly rows="15" cols="100">{{ xml }}</textarea>
+
+<p><a href="{% url 'new_event_type_element' event_type.id %}">New Element</a></p>
 
 <h3>Elemente</h3>
 <ul>
 {% for el in elements %}
-  <li>{{ el.el_name }}</li>
+  <li>{{ el.el_name }}
+  <a href="{% url 'edit_event_type_element' event_type.id el.id %}">Edit</a>
+  <a href="{% url 'show_event_type' event_type.id %}?action=delete&el_id={{ el.id }}">Delete</a></li>
 {% endfor %}
 </ul>

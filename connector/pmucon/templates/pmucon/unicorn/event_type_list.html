@@ -1,6 +1,8 @@
 <h1>Processmaker-Unicorn Connector</h1>
 <a href="/">Index</a>
 
+<a href="{% url 'new_event_type' %}">New Event Type</a>
+
 <h2>List unicorn event types</h2>
 
 {% for event_type in event_type_list %}
@@ -8,6 +10,6 @@
 <ul>
   <li><a href="{% url 'show_event_type' event_type.id %}">Show</a></li>
   <li><a href="{% url 'edit_event_type' event_type.id %}">Edit</a></li>
-  <li><a href="{% url 'delete_event_type' event_type.id %}">Delete</a></li>
+  <li><a href="{% url 'list_event_types' %}?action=delete&et_id={{ event_type.id }}">Delete</a></li>
 </ul>
 {% endfor %}

@@ -1,5 +1,10 @@
 <h1>ProcessMaker-Unicorn-Connector</h1>
 
+<h2>Unicorn</h2>
+<a href="{% url 'list_event_types' %}">List EventTypes</a>
+
+<h2>Processmaker</h2>
+
 <a href="/pmauth">ProcessMaker Authorization</a> <br>
 {% if pm_access_token %}
   <p>Authorized via Token: {{ pm_access_token }} </p>

@@ -29,8 +29,14 @@ urlpatterns = [
   url(r'^routecase/(?P<app_uid>[0-9a-zA-Z]+)/?$', views.routeCase,      name='routecase'),
   url(r'^deletecases/?$',                         views.deleteCases,    name='deletecases'),
 
-  url(r'^event_types/?$',                         unicorn_views.list_event_types,  name='list_event_types'),
-  url(r'^event_type/(?P<et_id>[0-9]+)/?$',        unicorn_views.show_event_type,   name='show_event_type'),
-  url(r'^event_type/(?P<et_id>[0-9]+)/edit/?$',   unicorn_views.edit_event_type,   name='edit_event_type'),
-  url(r'^event_type/(?P<et_id>[0-9]+)/delete/?$', unicorn_views.delete_event_type, name='delete_event_type')
+  url(r'^event_types/?$',                         unicorn_views.list_event_types, name='list_event_types'),
+  url(r'^event_type/(?P<et_id>[0-9]+)/?$',        unicorn_views.show_event_type,  name='show_event_type'),
+  url(r'^event_type/(?P<et_id>[0-9]+)/edit/?$',   unicorn_views.edit_event_type,  name='edit_event_type'),
+  url(r'^event_type/new/?$',                      unicorn_views.new_event_type,   name='new_event_type'),
+
+  url(r'^event_type/(?P<et_id>[0-9]+)/new/?$',    unicorn_views.new_event_type_element,
+                                                                                  name='new_event_type_element'),
+  url(r'^event_type/(?P<et_id>[0-9]+)/(?P<el_id>[0-9]+)/edit/?$',
+                                                  unicorn_views.edit_event_type_element,
+                                                                                  name='edit_event_type_element'),
 ]
