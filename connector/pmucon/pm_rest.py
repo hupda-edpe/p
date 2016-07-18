@@ -2,23 +2,30 @@
 
 import requests
 
-def get(url, hdr):
-  return request('get', url, hdr)
+from pmucon.config import pm_config
+from pmucon import pm_auth 
 
-def post(url, hdr, payload):
-  return request('post', url, hdr, payload)
+def get(endpoint):
+  return request('get', endpoint)
 
-def put(url, hdr):
-  return request('put', url, hdr)
+def post(endpoint, payload):
+  return request('post', endpoint, payload)
+
+def put(endpoint):
+  return request('put', endpoint)
 
 
-def request(method, url, hdr, payload=""):
+def request(method, endpoint, payload=""):
+  if endpoint and endpoint[0] is not "/": 
+      endpoint = "/"+endpoint 
+  url = pm_config.FULL_URL + endpoint
+
   if(method is "get"):
-    r = requests.get(url, headers=hdr)
+    r = requests.get(url, headers=pm_auth.get_auth_hdr())
   elif(method is "post"):
-    r = requests.post(url, headers=hdr, data=payload)
+    r = requests.post(url, headers=pm_auth.get_auth_hdr(), data=payload)
   elif(method is "put"):
-    r = requests.put(url, headers=hdr)
+    r = requests.put(url, headers=pm_auth.get_auth_hdr())
   else:
     raise Exception("No valid HTTP function was given. \"{method}\" Aborting." \
       .format(method = method))
