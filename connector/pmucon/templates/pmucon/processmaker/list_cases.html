@@ -10,6 +10,14 @@ td,th {
 }
 </style>
 
+<h1>Processmaker-Unicorn Connector</h1>
+<p><a href="/">Index</a></p>
+
+<p><a href="{% url 'cases' %}">Pull again</a></p>
+<p><a href="{% url 'cases' %}">Push all cases</a></p>
+
+<h2>Cases:</h2>
+
 <table>
 <tr>
 <th>Name</th>
@@ -17,6 +25,7 @@ td,th {
 <th>Status</th>
 <th>Event</th>
 <th>Wait</th>
+<th colspan="2">Actions</th>
 </tr>
 
 {% for case in cases %}
@@ -26,6 +35,8 @@ td,th {
 <td>{{ case.status }}</td>
 <td>{{ case.event }}</td>
 <td>{{ case.waiting }}</td>
+<td><a href="{% url 'cases' %}?action=push&case={{ case.id }}">Push</a></td>
+<td><a href="{% url 'cases' %}">Route</a></td>
 </tr>
 
 {% endfor %}

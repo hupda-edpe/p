@@ -2,9 +2,6 @@ from pmucon.config import unicorn_config
 
 import requests, json
 
-
-############### EVENT TYPES ##################
-
 def syncEventType(event_type):
   if not event_type.to_xml() == getEventType(event_type):
     deleteEventType(event_type)
@@ -31,20 +28,11 @@ def deleteEventType(event_type):
   resp = requests.delete(unicorn_config.URL + "EventType/" + name)
 
 
-################ EVENTS #######################
+def postEvent(ev):
+  xml = ev.to_xml()
+  return requests.post(unicorn_config.URL + "Event", data=xml)
 
 
-
-def postEvent(app_uid):
-
-  event = """<?xml version="1.0" encoding="UTF-8" standalone="no"?> 
-    <cpoi xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="ProcessmakerEvent.xsd"> 
-      <AppUid>{appuid}</AppUid> 
-      <Timestamp>2015-09-05T20:05:32.799</Timestamp> 
-    </cpoi>
-  """.format(appuid=app_uid)
-
-  return requests.post(unicorn_config.URL + "Event", data=event)
 
 def postQuery():
   queryString = "SELECT * FROM ProcessmakerEvent"

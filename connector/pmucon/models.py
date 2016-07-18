@@ -46,17 +46,17 @@ class EventTypeElement(models.Model):
 
 
 class Event():
-  def __init__(name="", app_uid="", variables=[]):
-    self.name = name
-    self.app_uid = app_uid
-    self.variables = variables
+  def __init__(self, *args, **kwargs):
+    self.schema = kwargs.pop('schema', '')
+    self.app_uid = kwargs.pop('app_uid', '')
+    self.variables = kwargs.pop('variables', [])
 
-  def to_xml():
+  def to_xml(self):
     now = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
     xml = """<?xml version="1.0" encoding="UTF-8" standalone="no"?> 
 <cpoi xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="{schema}.xsd"> 
   <AppUid>{appuid}</AppUid> 
-  <Timestamp>{timestamp}</Timestamp>""".format(schema=self.name, appuid=self.app_uid, timestamp=now)
+  <Timestamp>{timestamp}</Timestamp>""".format(schema=self.schema, appuid=self.app_uid, timestamp=now)
     for v in self.variables:
       xml += '\n  ' + v.to_xml()
     xml += "\n</cpoi>"
@@ -64,11 +64,11 @@ class Event():
 
 
 class EventVariable():
-  def __init__(name="", value=""):
-    self.name = name
-    self.value = value
+  def __init__(self, *args, **kwargs):
+    self.name = kwargs.pop('name', '')
+    self.value = kwargs.pop('value', '')
 
-  def to_xml():
+  def to_xml(self):
     return "<{name}>{value}</{name}>".format(name=self.name, value=self.value)
 
 
