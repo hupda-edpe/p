@@ -17,6 +17,10 @@ def list_event_types(req):
     et_id = req.GET.get('et_id', -1)
     et = get_object_or_404(EventType, pk=et_id)
     et.delete()
+  elif req.GET.get('action','') == 'sync':
+    et_id = req.GET.get('et_id', -1)
+    et = get_object_or_404(EventType, pk=et_id)
+    unicorn_wrapper.syncEventType(et)
 
   context = {
     "event_type_list": EventType.objects.all()
