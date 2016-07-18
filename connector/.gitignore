@@ -1,2 +1,3 @@
 pmucon/config/*.py
 *.pyc
+tokenfile.txt
