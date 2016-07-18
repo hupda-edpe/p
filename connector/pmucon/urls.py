@@ -38,6 +38,12 @@ urlpatterns = [
   url(r'^event_type/(?P<et_id>[0-9]+)/(?P<el_id>[0-9]+)/edit/?$',
                                                   unicorn_views.edit_event_type_element,
                                                                                   name='edit_event_type_element'),
+
+  url(r'^event_query/?$',                             unicorn_views.list_event_queries, name='list_event_queries'),
+  url(r'^event_query/new/?$',    unicorn_views.new_event_query,    name='new_event_query'),
+  url(r'^event_query/(?P<query_id>[0-9]+)/edit/?$',   unicorn_views.edit_event_query,   name='edit_event_query'),
+  url(r'^event_query/(?P<query_id>[0-9]+)/delete/?$', unicorn_views.delete_event_query, name='delete_event_query'),
+  url(r'^event_query/(?P<query_id>[0-9]+)/sync/?$',   unicorn_views.sync_event_query,   name='sync_event_query'),
 ]
 
 

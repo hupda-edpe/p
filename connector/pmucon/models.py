@@ -37,9 +37,9 @@ class EventType(models.Model):
 class EventTypeElement(models.Model):
   event_type = models.ForeignKey(EventType, on_delete=models.CASCADE)
   el_name = models.CharField(max_length=128)
-  el_type = models.CharField(max_length=128)
-  min_occurs = models.IntegerField()
-  max_occurs = models.IntegerField()
+  el_type = models.CharField(max_length=128, default='string')
+  min_occurs = models.IntegerField(default=1)
+  max_occurs = models.IntegerField(default=1)
 
   def to_xml(self):
     return '<xs:element name="{el_name}" type="xs:{el_type}" minOccurs="{min_occurs}" maxOccurs="{max_occurs}" />' \
@@ -75,7 +75,11 @@ class EventVariable():
 
 
 class EventQuery(models.Model):
+  uuid = models.CharField(max_length=128)
+  title = models.CharField(max_length=128)
   query_string = models.TextField()
+  email = models.CharField(max_length=128, default='test@example.com')
+
 
 
 

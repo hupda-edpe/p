@@ -16,6 +16,7 @@ def list_event_types(req):
   elif req.GET.get('action','') == 'delete':
     et_id = req.GET.get('et_id', -1)
     et = get_object_or_404(EventType, pk=et_id)
+    unicorn_wrapper.deleteEventType(et)
     et.delete()
   elif req.GET.get('action','') == 'sync':
     et_id = req.GET.get('et_id', -1)
@@ -25,7 +26,7 @@ def list_event_types(req):
   context = {
     "event_type_list": EventType.objects.all()
   }
-  return render(req, "pmucon/unicorn/event_type_list.html", context)
+  return render(req, "pmucon/unicorn/event_types.html", context)
 
 def show_event_type(req, et_id):
   et = get_object_or_404(EventType, pk=et_id)
@@ -91,3 +92,35 @@ def new_event_type_element(req, et_id):
   }
   return render(req, 'pmucon/unicorn/edit_event_type_element.html', context)
 
+
+def list_event_queries(req):
+  queries = EventQuery.objects.all()
+  return render(req, 'pmucon/unicorn/event_queries.html', {'event_queries': queries})
+
+def new_event_query(req):
+  if req.method == 'GET':
+    return render(req, 'pmucon/unicorn/new_event_query.html', {})
+  else:
+    EventQuery(title=req.POST.get('title',''), query_string=req.POST.get('query_string','')).save()
+    return list_event_queries(req)
+
+def edit_event_query(req, query_id):
+  query = get_object_or_404(EventQuery, pk=query_id)
+  if req.method == 'GET':
+    return render(req, 'pmucon/unicorn/edit_event_query.html', {'event_query': query})
+  else:
+    query.title = req.POST.get('title', query.title)
+    query.query_string = req.POST.get('query_string', query.query_string)
+    query.save()
+    return list_event_queries(req)
+
+def delete_event_query(req, query_id):
+  query = get_object_or_404(EventQuery, pk=query_id)
+  unicorn_wrapper.deleteEventQuery(query)
+  query.delete()
+  return list_event_queries(req)
+
+def sync_event_query(req, query_id):
+  query = get_object_or_404(EventQuery, pk=query_id)
+  unicorn_wrapper.syncEventQuery(query)
+  return list_event_queries(req)

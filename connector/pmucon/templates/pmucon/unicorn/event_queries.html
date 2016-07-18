@@ -1,0 +1,16 @@
+<h1>Processmaker-Unicorn Connector</h1>
+<p><a href="/">Index</a></p>
+
+<p><a href="{% url 'new_event_query' %}">New Event Query</a></p>
+
+<h2>Unicorn Event Queries</h2>
+
+{% for query in event_queries %}
+<p style="font-weight: bold">{{ query.title }}</p>
+<p>
+<a href="{% url 'edit_event_query' query.id %}">Edit</a></li>
+<a href="{% url 'delete_event_query' query.id %}">Delete</a></li>
+<a href="{% url 'sync_event_query' query.id %}">Sync with Unicorn</a></li>
+</p>
+<textarea readonly rows="10" cols="100">{{ query.query_string }}</textarea>
+{% endfor %}

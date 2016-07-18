@@ -33,21 +33,26 @@ def postEvent(ev):
   return requests.post(unicorn_config.URL + "Event", data=xml)
 
 
+def syncEventQuery(query):
+  if not query.query_string == getEventQuery(query):
+    deleteEventQuery(query)
+    postEventQuery(query)
 
-def postQuery():
-  queryString = "SELECT * FROM ProcessmakerEvent"
-  title = "PMQuery"
-  email = "test@test.de"
-  notificationPath = "http://141.20.192.110:8000/catch/"
 
+def postEventQuery(query):
   payload = {
-    "queryString": queryString,
-    "title": title,
-    "email": email,
-    "notificationPath": notificationPath
+    "queryString": query.query_string,
+    "title": query.title,
+    "email": query.email,
+    "notificationPath": unicorn_config.CALLBACK
   }
+  r = requests.post(unicorn_config.URL + "EventQuery/REST", headers={"content-type": "application/json"}, data=json.dumps(payload))
+  r.raise_for_status()
+  query.uuid = r.text
+  query.save()
 
-  return requests.post(unicorn_config.URL + "EventQuery/REST", headers={"content-type": "application/json"}, data=json.dumps(payload))
+def getEventQuery(query):
+  return requests.get(unicorn_config.URL + "EventQuery/" + query.uuid).text
 
-def parseQueryMatch(qm):
-  pass
+def deleteEventQuery(query):
+  return requests.delete(unicorn_config.URL + "EventQuery/REST/" + query.uuid)
