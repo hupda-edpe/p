@@ -15,13 +15,15 @@ Including another URLconf
 """
 from django.conf.urls import url
 
-from . import views
-from . import unicorn_views
+from . import views, unicorn_views, pm_views
 
 urlpatterns = [
   url(r'^$', views.index, name='index'),
 
-  url(r'^pmauth/?$',                              views.pmAuth,         name='pmauth'),
+  url(r'^inbox/?$', pm_views.inbox, name='inbox'),
+  url(r'^cases/?$', pm_views.list_cases, name='cases'),
+
+
   url(r'^startcases/?$',                          views.listStartCases, name='startcases'),
   url(r'^pullcases/?$',                           views.pullCases,      name='pullcases'),
   url(r'^postevent/(?P<app_uid>[0-9a-zA-Z]+)/?$', views.postEvent,      name='postevent'),
@@ -29,7 +31,7 @@ urlpatterns = [
   url(r'^routecase/(?P<app_uid>[0-9a-zA-Z]+)/?$', views.routeCase,      name='routecase'),
   url(r'^deletecases/?$',                         views.deleteCases,    name='deletecases'),
 
-  url(r'^event_types/?$',                         unicorn_views.list_event_types, name='list_event_types'),
+  url(r'^event_type/?$',                          unicorn_views.list_event_types, name='list_event_types'),
   url(r'^event_type/(?P<et_id>[0-9]+)/?$',        unicorn_views.show_event_type,  name='show_event_type'),
   url(r'^event_type/(?P<et_id>[0-9]+)/edit/?$',   unicorn_views.edit_event_type,  name='edit_event_type'),
   url(r'^event_type/new/?$',                      unicorn_views.new_event_type,   name='new_event_type'),

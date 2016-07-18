@@ -1,0 +1,33 @@
+<style>
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+td,th {
+  border: 1px solid black;
+  margin: 0px;
+  padding: 5px;
+}
+</style>
+
+<table>
+<tr>
+<th>Name</th>
+<th>app_uid</th>
+<th>Status</th>
+<th>Event</th>
+<th>Wait</th>
+</tr>
+
+{% for case in cases %}
+<tr>
+<td>{{ case.name }}</td>
+<td>{{ case.app_uid }}</td>
+<td>{{ case.status }}</td>
+<td>{{ case.event }}</td>
+<td>{{ case.waiting }}</td>
+</tr>
+
+{% endfor %}
+
+</table>

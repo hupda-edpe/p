@@ -2,12 +2,12 @@ from __future__ import unicode_literals
 
 from django.db import models
 
-class PendingEvent(models.Model):
-  app_uid = models.CharField(max_length=200)
-  status = models.CharField(max_length=200)
+import datetime
+
+######### UNICORN ############
 
 class EventType(models.Model):
-  et_name = models.CharField(max_length=200)
+  et_name = models.CharField(max_length=128)
 
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
@@ -35,8 +35,8 @@ class EventType(models.Model):
 
 class EventTypeElement(models.Model):
   event_type = models.ForeignKey(EventType, on_delete=models.CASCADE)
-  el_name = models.CharField(max_length=200)
-  el_type = models.CharField(max_length=200)
+  el_name = models.CharField(max_length=128)
+  el_type = models.CharField(max_length=128)
   min_occurs = models.IntegerField()
   max_occurs = models.IntegerField()
 
@@ -44,5 +44,66 @@ class EventTypeElement(models.Model):
     return '<xs:element name="{el_name}" type="xs:{el_type}" minOccurs="{min_occurs}" maxOccurs="{max_occurs}" />' \
       .format(el_name=self.el_name, el_type=self.el_type, min_occurs=self.min_occurs, max_occurs=self.max_occurs)
 
+
+class Event():
+  def __init__(name="", app_uid="", variables=[]):
+    self.name = name
+    self.app_uid = app_uid
+    self.variables = variables
+
+  def to_xml():
+    now = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
+    xml = """<?xml version="1.0" encoding="UTF-8" standalone="no"?> 
+<cpoi xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="{schema}.xsd"> 
+  <AppUid>{appuid}</AppUid> 
+  <Timestamp>{timestamp}</Timestamp>""".format(schema=self.name, appuid=self.app_uid, timestamp=now)
+    for v in self.variables:
+      xml += '\n  ' + v.to_xml()
+    xml += "\n</cpoi>"
+    return xml
+
+
+class EventVariable():
+  def __init__(name="", value=""):
+    self.name = name
+    self.value = value
+
+  def to_xml():
+    return "<{name}>{value}</{name}>".format(name=self.name, value=self.value)
+
+
+
 class EventQuery(models.Model):
   query_string = models.TextField()
+
+
+
+
+##### PM STUFF ######
+
+class Case(models.Model):
+  name = models.CharField(max_length=128)
+  app_uid = models.CharField(max_length=128)
+  event = models.CharField(max_length=128)
+  status = models.CharField(max_length=128)
+  waiting = models.BooleanField()
+
+class CaseVariable(models.Model):
+  case = models.ForeignKey(EventType, on_delete=models.CASCADE)
+  name = models.CharField(max_length=128)
+  value = models.CharField(max_length=128)
+
+
+
+
+
+
+
+
+
+#### OBSOLETE ####
+
+class PendingEvent(models.Model):
+  app_uid = models.CharField(max_length=128)
+  status = models.CharField(max_length=128)
+

@@ -1,6 +1,8 @@
 #! python
 
-from pmucon.models import PendingEvent
+import json
+
+from pmucon.models import Case, CaseVariable
 from pmucon import pm_rest
 
 class PMWrapper:
@@ -19,9 +21,19 @@ class PMWrapper:
     cases = pm_rest.get('cases')
 
     for case in cases:
-      if not PendingEvent.objects.filter(app_uid=case["app_uid"]).exists():
-        pe = PendingEvent(app_uid=case["app_uid"], status="new")
-        pe.save()
+      if not Case.objects.filter(app_uid=case['app_uid']).exists():
+        tas_uid = case['tas_uid']
+        pro_uid = case['pro_uid']
+        task = pm_rest.get('project/'+pro_uid+'/activity/'+tas_uid)
+        props = json.loads(task['properties']['tas_description'])
+
+        case_obj = Case(
+          name    = case['app_tas_title'],
+          app_uid = case['app_uid'],
+          waiting = props['waiting'],
+          event   = props['event'],
+          status  = 'new')
+        case_obj.save()
 
   def pushIntermediate(self, app_uid):
     # case_uid should be saved somewhere
