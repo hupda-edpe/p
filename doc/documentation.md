@@ -16,7 +16,8 @@
 > * Wer sind potenzielle Nutzer? (Who?)
 > * Wieso ist es überhaupt interessant sich damit zu beschäftigen? (Why?)
 
-### CEP
+### Welche Bereiche sind betroffen?
+#### CEP
 CEP means taking a stream of data, called events, analyzing it and looking for patterns - the complex events. Obviously, hat requires a certain minimum amount of data. 
 
 The kind of data is neither specified nor limited. It can range from weather data, to service calls, text messages, stock market, traffic, and so on. An event can also be a delta, meaning a change in value. 
@@ -27,13 +28,18 @@ Analysis however can be done without having complex event *processing*. The need
 
 CEP allows for multiple sources of data. 
 
-### BPM
+#### BPM
 Management of Business Processes. Aims at improving processes. (Because reasons.) That's why Wikipedia says it's a "process optimization process".
 
-### EventDriven-BPM
+#### EventDriven-BPM
 Theoretically this kind of project could be used for all kinds of appications. The only two requirements are somewhat large amounts of data (which any sensor can produce) and a recurring process that can be modeled in BPMN. Seeing the amount of work that is required, it is probably not going to be used by your garden-variety home-automation hobbiest, but it would be possible. 
 
 More realistically businesses will usese this kind of software to further automate their behavior and integrate data driven processes or decisions. Future appilcations might even hold the possibility of Event Driven Process Modeling. 
+
+### Wieso ist es interessant sich damit zu beschäftigen?
+BPM beschäftigt sich mit einzelnen Prozessen eines "Business". CEP schafft es zusammenhänge zwischen vielen (zu vielen für Menschen?) Daten automatisiert herzustellen. Das zusammenspiel der Beiden, ermöglicht ein ganzheitlicheres Bild auf Business abläufe und zusammenhänge zwischen diesen aufzuzeigen. Dies erfordert (noch) selbstverständlich Menschliches eingreifen. 
+
+Insbesondere 
 
 ## Problemstellung
 ### Posed Questions
@@ -146,7 +152,7 @@ Das ein Unicorn Wrapper entstand, war ebenfalls nicht teil des initialen Plans, 
 Besser wäre: Beide Engines so modifiezieren, dass sie direkt miteinander reden. (Push/Pull) Bzw. Eine Software so zu erweitern, dass sie mit der anderen reden kann. 
 
 ### Setup
-Unsing container was a good solution, especially in the beginning the circumstances weren't clear. (see Workflow). Containers offer several advantages:
+Using container was a good solution, especially in the beginning the circumstances weren't clear. (see Workflow). Containers offer several advantages:
 
 * Easy (re)installs for all team members
 * Quick way to purge the system and start over
