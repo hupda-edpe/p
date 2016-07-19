@@ -24,7 +24,7 @@ td,th {
 <th>app_uid</th>
 <th>Status</th>
 <th>Event Type</th>
-<th>Wait</th>
+<th>Blocking</th>
 <th colspan="3">Actions</th>
 </tr>
 
@@ -34,7 +34,7 @@ td,th {
 <td>{{ case.app_uid }}</td>
 <td>{{ case.status }}</td>
 <td>{{ case.event_type }}</td>
-<td>{{ case.waiting }}</td>
+<td>{{ case.blocking }}</td>
 <td><a href="{% url 'push_case' case.id %}">Push</a></td>
 <td><a href="{% url 'route_case' case.id %}">Route</a></td>
 <td><a href="{% url 'delete_case' case.id %}">Delete</a></td>

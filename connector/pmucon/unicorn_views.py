@@ -107,7 +107,7 @@ def new_event_query(req):
 def edit_event_query(req, query_id):
   query = get_object_or_404(EventQuery, pk=query_id)
   if req.method == 'GET':
-    return render(req, 'pmucon/unicorn/edit_event_query.html', {'event_query': query})
+    return render(req, 'pmucon/unicorn/edit_event_query.html', {'query': query})
   else:
     query.title = req.POST.get('title', query.title)
     query.query_string = req.POST.get('query_string', query.query_string)

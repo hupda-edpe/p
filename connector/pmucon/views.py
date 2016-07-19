@@ -35,18 +35,28 @@ def listStartCases(req):
     
 @csrf_exempt
 def catchMatch(req):
-  jsn = json.loads(req.body)
+  print(req.body)
+  jsn = json.loads(str(req.body, 'utf-8'))
 
-  if jsn['Mode'] == 'App':
+  if 'AppUid' in jsn:
     app_uid = jsn['AppUid']
+    del jsn['AppUid']
     case = get_object_or_404(Case, app_uid = app_uid)
-    if not case.status == 'routed'
+    if not case.status == 'routed':
       pm_wrapper.route_case(case)
       case.status = 'routed'
       case.save()
-  elif: jsn['Mode'] == 'Task':
+
+  if 'TasUid' in jsn and 'ProUid' in jsn:
     pro_uid = jsn['ProUid']
     tas_uid = jsn['TasUid']
-    pm_wrapper.start_task(pro_uid, tas_uid)
+    app_uid = pm_wrapper.start_task(pro_uid, tas_uid)
+    del jsn['ProUid']
+    del jsn['TasUid']
+    if 'Timestamp' in jsn:
+      del jsn['Timestamp']
+    c = Case(app_uid=app_uid)
+    pm_wrapper.set_variables(c, jsn)
+    pm_wrapper.route_case(c)
 
   return HttpResponse("")

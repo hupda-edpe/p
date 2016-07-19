@@ -17,9 +17,13 @@ def pull_cases():
       case_obj = Case(
         name    = case['app_tas_title'],
         app_uid = case['app_uid'],
-        waiting = props['waiting'],
+        blocking = props['blocking'],
         event_type   = props['event_type'],
         status  = 'new')
+
+      if 'start_task' in props and 'start_process' in props:
+        case_obj.tas_uid = props['start_task']
+        case_obj.pro_uid = props['start_process']
       case_obj.save()
 
 def route_case(case):

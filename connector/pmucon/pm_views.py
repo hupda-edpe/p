@@ -43,15 +43,13 @@ def push(case):
 
   event_vars = [EventVariable(name=elem.el_name, value=variables[elem.el_name]) for elem in event_type.elements.all()]
 
-  ev = Event(schema=case.event_type, app_uid=case.app_uid, variables=event_vars)
+  ev = Event(schema=case.event_type, app_uid=case.app_uid, tas_uid=case.tas_uid, pro_uid=case.pro_uid, variables=event_vars)
   
-  if not case.waiting:
+  if not (case.blocking or case.status == 'routed'):
     pm_wrapper.route_case(case)
     case.status = 'routed'
   elif case.status == 'new':
     case.status = 'pushed'
   
   case.save()
-  print("jetzt post")
   unicorn_wrapper.postEvent(ev)
-  print("post fertig")

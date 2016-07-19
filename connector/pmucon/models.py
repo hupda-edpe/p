@@ -24,7 +24,6 @@ class EventType(models.Model):
       xml += "\n        " + el.to_xml()
 
     xml += """
-        <xs:element name="Mode" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="AppUid" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="ProUid" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="TasUid" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -52,15 +51,22 @@ class EventTypeElement(models.Model):
 class Event():
   def __init__(self, *args, **kwargs):
     self.schema = kwargs.pop('schema', '')
-    self.app_uid = kwargs.pop('app_uid', '')
+    self.app_uid = kwargs.pop('app_uid', None)
+    self.tas_uid = kwargs.pop('tas_uid', None)
+    self.pro_uid = kwargs.pop('pro_uid', None)
     self.variables = kwargs.pop('variables', [])
 
   def to_xml(self):
     now = '{:%Y-%m-%d %H:%M:%S}'.format(datetime.datetime.now())
     xml = """<?xml version="1.0" encoding="UTF-8" standalone="no"?> 
-<cpoi xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="{schema}.xsd"> 
-  <AppUid>{appuid}</AppUid> 
-  <Timestamp>{timestamp}</Timestamp>""".format(schema=self.schema, appuid=self.app_uid, timestamp=now)
+<cpoi xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="{schema}.xsd">
+  <Timestamp>{timestamp}</Timestamp>""".format(schema=self.schema, timestamp=now)
+    if self.app_uid:
+      xml += "\n  <AppUid>{appuid}</AppUid>".format(appuid=self.app_uid)
+    if self.tas_uid:
+      xml += "\n  <TasUid>{tasuid}</TasUid>".format(tasuid=self.tas_uid)
+    if self.pro_uid:
+      xml += "\n  <ProUid>{prouid}</ProUid>".format(prouid=self.pro_uid)
     for v in self.variables:
       xml += '\n  ' + v.to_xml()
     xml += "\n</cpoi>"
@@ -92,9 +98,11 @@ class EventQuery(models.Model):
 class Case(models.Model):
   name = models.CharField(max_length=128)
   app_uid = models.CharField(max_length=128)
+  tas_uid = models.CharField(max_length=128)
+  pro_uid = models.CharField(max_length=128)
   event_type = models.CharField(max_length=128)
   status = models.CharField(max_length=128)
-  waiting = models.BooleanField()
+  blocking = models.BooleanField()
 
 class CaseVariable(models.Model):
   case = models.ForeignKey(EventType, on_delete=models.CASCADE)
