@@ -54,4 +54,4 @@ RUN chmod 770 /opt/set_file_permissions.sh
 
 RUN a2ensite pmos.conf
 
-CMD ["/usr/sbin/apache2", "-D",  "FOREGROUND"]
+CMD ["apache2ctl", "-D",  "FOREGROUND"]

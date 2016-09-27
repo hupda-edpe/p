@@ -131,6 +131,8 @@ class System extends Api
             $enabledFeatures = array();
 
             /*----------------------------------********---------------------------------*/
+            $enabledFeatures[] = "zLhSk5TeEQrNFI2RXFEVktyUGpnczV1WEJNWVp6cjYxbTU3R29mVXVZNWhZQT0=";
+
 
             return $enabledFeatures;
 

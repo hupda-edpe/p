@@ -1,0 +1,14 @@
+<form action="{% url 'show_event_type' event_type.id %}" method="post">
+  <input type="hidden" name="class" value="EventTypeElement">
+  <p>Element Name:</p>
+  <input type="text" name="el_name" value="{{ event_type_element.el_name }}">
+  <p>Element Type:</p>
+  <input type="text" name="el_type" value="{{ event_type_element.el_type }}">
+  <p>Min occurs:</p>
+  <input type="text" name="min_occurs" value="{{ event_type_element.min_occurs }}">
+  <p>Max occurs:</p>
+  <input type="text" name="max_occurs" value="{{ event_type_element.max_occurs }}">
+  <input type="submit" value="Submit">
+  {% csrf_token %}
+</form>
+<a href="{% url 'show_event_type' event_type.id %}">Cancel</a>

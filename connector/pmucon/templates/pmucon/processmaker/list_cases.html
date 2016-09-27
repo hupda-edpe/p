@@ -1,0 +1,45 @@
+<style>
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+td,th {
+  border: 1px solid black;
+  margin: 0px;
+  padding: 5px;
+}
+</style>
+
+<h1>Processmaker-Unicorn Connector</h1>
+<p><a href="/">Index</a></p>
+
+<p><a href="{% url 'cases' %}">Pull again</a></p>
+<p><a href="{% url 'push_all' %}">Push all cases</a></p>
+
+<h2>Cases:</h2>
+
+<table>
+<tr>
+<th>Name</th>
+<th>app_uid</th>
+<th>Status</th>
+<th>Event Type</th>
+<th>Blocking</th>
+<th colspan="3">Actions</th>
+</tr>
+
+{% for case in cases %}
+<tr>
+<td>{{ case.name }}</td>
+<td>{{ case.app_uid }}</td>
+<td>{{ case.status }}</td>
+<td>{{ case.event_type }}</td>
+<td>{{ case.blocking }}</td>
+<td><a href="{% url 'push_case' case.id %}">Push</a></td>
+<td><a href="{% url 'route_case' case.id %}">Route</a></td>
+<td><a href="{% url 'delete_case' case.id %}">Delete</a></td>
+</tr>
+
+{% endfor %}
+
+</table>

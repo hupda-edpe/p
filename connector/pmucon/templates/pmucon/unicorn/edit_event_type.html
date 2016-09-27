@@ -1,0 +1,8 @@
+<form action="{% url 'show_event_type' event_type.id %}" method="post">
+  <input type="hidden" name="action" value="edit_event_type">
+  <p>Event schema name:</p>
+  <input type="text" name="et_name" value="{{ event_type.et_name }}">
+  <input type="submit" value="Submit">
+  {% csrf_token %}
+</form>
+<a href="{% url 'show_event_type' event_type.id %}">Cancel</a>
