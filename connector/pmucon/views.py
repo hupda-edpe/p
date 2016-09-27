@@ -38,10 +38,24 @@ def catchMatch(req):
   print(req.body)
   jsn = json.loads(str(req.body, 'utf-8'))
 
+  if 'A' in jsn:
+    flat = {}
+    a = jsn['A']
+    b = jsn['B']
+    for key in jsn.keys():
+      for deep_key in jsn[key]:
+        flat[deep_key] = jsn[key][deep_key]
+    jsn = flat
+
+  variables = {}
+  for key in jsn.keys():
+    if key != 'AppUid' and key != 'TasUid' and key != 'ProUid' and key != 'Timestamp':
+      variables[key] = jsn[key]
+
   if 'AppUid' in jsn:
     app_uid = jsn['AppUid']
-    del jsn['AppUid']
     case = get_object_or_404(Case, app_uid = app_uid)
+    pm_wrapper.set_variables(case,variables)
     if not case.status == 'routed':
       pm_wrapper.route_case(case)
       case.status = 'routed'
@@ -51,12 +65,8 @@ def catchMatch(req):
     pro_uid = jsn['ProUid']
     tas_uid = jsn['TasUid']
     app_uid = pm_wrapper.start_task(pro_uid, tas_uid)
-    del jsn['ProUid']
-    del jsn['TasUid']
-    if 'Timestamp' in jsn:
-      del jsn['Timestamp']
     c = Case(app_uid=app_uid)
-    pm_wrapper.set_variables(c, jsn)
+    pm_wrapper.set_variables(c, variables)
     pm_wrapper.route_case(c)
 
   return HttpResponse("")
