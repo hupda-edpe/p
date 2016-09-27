@@ -1,4 +1,9 @@
-#!python
+""" This module is a simple wrapper for calling the ProcessMaker API.
+Connection details are extracted from config/pm_config.py and authentication
+is done via the pm_auth module.
+Some errorhandling is provided, but sane return values aren't guaranteed.
+
+"""
 
 import requests
 
@@ -6,16 +11,30 @@ from pmucon.config import pm_config
 from pmucon import pm_auth 
 
 def get(endpoint):
+  """HTTP GET wrapper for the request function."""
   return request('get', endpoint)
 
 def post(endpoint, payload):
+  """HTTP POST wrapper for the request function."""
   return request('post', endpoint, payload)
 
 def put(endpoint, payload=''):
+  """HTTP PUT wrapper for the request function."""
   return request('put', endpoint, payload)
 
 
 def request(method, endpoint, payload=''):
+  """ Perform a request to ProcessMaker.
+
+  Args:
+    method -- The HTTP request method to be used.
+    endpoint -- The endpoint of the PM API to be called.
+    payload -- Will be sent as content when using POST or PUT methods.
+
+  Returns:
+    If the response is a json it will be converted into a dict and returned.
+    Otherwise the plain content of the response will be returned.
+  """
   if endpoint and endpoint[0] is not '/': 
       endpoint = '/'+endpoint 
   url = pm_config.FULL_URL + endpoint

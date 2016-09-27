@@ -1,3 +1,5 @@
+"""This module contains the django-views related to ProcessMaker."""
+
 from django.shortcuts import render, get_object_or_404
 
 from pmucon.models import *

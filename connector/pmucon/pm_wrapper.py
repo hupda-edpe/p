@@ -1,4 +1,6 @@
-#! python
+"""This module provides a simple interface for communicating with ProcessMaker
+in a way that is needed throughout this django application.
+"""
 
 import json
 
@@ -6,6 +8,9 @@ from pmucon.models import Case, CaseVariable
 from pmucon import pm_rest
 
 def pull_cases():
+  """Pull all open cases (tasks) for the unicorn user from ProcessMaker and save
+  new ones into the database.
+  """
   cases = pm_rest.get('cases')
   for case in cases:
     if not Case.objects.filter(app_uid=case['app_uid']).exists():
@@ -27,18 +32,27 @@ def pull_cases():
       case_obj.save()
 
 def route_case(case):
+  """Route a given case in PM. Which essentially means marking the current
+  task as done and letting the underlying process continue.
+  """
   endpoint = "/cases/{app_uid}/route-case".format(app_uid = case.app_uid)
   pm_rest.put(endpoint)
 
 def get_variables(case):
+  """Get case variables of given case."""
   endpoint = '/cases/{app_uid}/variables'.format(app_uid = case.app_uid)
   return pm_rest.get(endpoint)
 
 def set_variables(case, variables):
+  """Set case variables of given case."""
   endpoint = '/cases/{app_uid}/variable'.format(app_uid = case.app_uid)
   return pm_rest.put(endpoint, variables)
 
 def start_task(pro_uid, tas_uid):
+  """Start a new task (instance of a process).
+
+  Returns the app_uid of the started task.
+  """
   payload = {
       "pro_uid": pro_uid,
       "tas_uid": tas_uid
@@ -46,8 +60,14 @@ def start_task(pro_uid, tas_uid):
   r = pm_rest.post('cases', payload)
   return r["app_uid"]
 
+
 class PMWrapper:
-  """Wrapper-Class for the Processmaker API"""
+  """An obsolete wrapper class for ProcessMaker.
+
+  This was used in the prototype but doesn't fulfill any purpose at the moment.
+  It rests here in case some of its functionality is needed again and also to 
+  document the origins of the ProcessMaker-Unicorn-Connector.
+  """
 
   def pushInitial(self, uid):
     task = self.start_tasks[uid]
@@ -125,16 +145,3 @@ class PMWrapper:
     r = pm_rest.put(endpoint)
     # TODO expect 200 and return True or False
     return r
-
-if __name__ == "__main__":
-  pmw = ProcessmakerWrapper()
-
-  tasks = pmw.start_tasks
-  example = tasks.keys()[0]
-  # NOTE: The above shouldn't be the usual usecase.
-  # When starting cases based on matched queries in unicorn,
-  # the task/case id should either come from
-  # manual mapping/configuration done beforehand or
-  # or be derived from the matched query.
-
-  pmw.pushInitial(example)
