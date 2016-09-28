@@ -1,14 +1,13 @@
 # Event Driven Process Engine
+*Gruppe Processmaker*<br>
+*Lukas Rosentreter, Alexander Senger*
 
 ## Inhalt
 
-[toc]
+<!--
+	[toc]
+-->
 
-| | ![Unicorn Logo](img/unicorn.png) | EDPE | ![ProcessMaker Logo](img/pm.png) |
-| :--- | --- | --- | --- |
-| Engine | Esper | Django | Zend |
-| Language | Java | Python | PHP |
-| LOC | N.a.N. | ~500 | > 10000 |
 
 ## Kontext und Motivation
 ### Posed Questions
@@ -17,16 +16,16 @@
 > * Wieso ist es überhaupt interessant sich damit zu beschäftigen? (Why?)
 
 ### Welche Bereiche sind betroffen?
-#### CEP
-CEP means taking a stream of data, called events, analyzing it and looking for patterns - the complex events. Obviously, hat requires a certain minimum amount of data. 
+#### Complex Event Proccessing
+...oder kurz *CEP*. Dabei wir ein Fluss an Daten beziehungsweise Ereignissen (Events) aus einer oder mehreren Quellenzusammengeführt und in Echtzeit analysiert. Echtzeit deswegen, weil genau das es von herkömmlicher Analyse der Daten, nach dem aggregieren, abgrenzt. <br>
+Wissen, dass aus der Kombination mehrerer Ereignisse gewonnen wird, sind Komplexe Ereignisse. Ereignisse sind nicht weiter spezifiziert oder limitiert und können von Wetter-Daten über Börsentrends bis zu Netzwerk-Logs reichen. <br>
+Bei der Analyse können sowohl die konkreten Werte, als auch der Unterschied zwischen ihnen (Delta) eine Rolle spielen. <br> 
+Um Zusammenhänge und mögliche Schlüsse verlässlicher aufdecken, respektive treffen zu können, ist eine kritische Menge an Daten von Nöten. Ein kontinuerlicher Strom an zusammenhängenden Daten wird daher als Voraussetzung angenommen. <span style="color: red">#bullshit</span>
 
-The kind of data is neither specified nor limited. It can range from weather data, to service calls, text messages, stock market, traffic, and so on. An event can also be a delta, meaning a change in value. 
+Es lassen sich alleinig aus der Beschreibung von CEP keine Rückschlüsse auf potentielle Nutzer oder Andendungsbereiche ziehen, denn relativ große Mengen an Daten, lassen sich, mindestens durch logs, heutzutage sehr leicht produzieren oder aggregieren. Ausgehend davon ist es theoretisch allen Menschen möglich, ihre Daten durch eine CEP zu schleusen und Schlüsse über ihr System, ihre Prozesse oder Strategien zu ziehen. 
 
-Therefore there is not really any conclusion as to who might be using complex event processing besides the fact that they need to produce rather large amounts of data. Which isn't really a problem when you consider that everyone can produce huge amounts of log data. From that basis everyone can start drawing conclusions as to how to tune, improve or alter their system(s), workflows or strategy.
 
-Analysis however can be done without having complex event *processing*. The need for some sort of real time analysis requires the processing of the stream while it happens as oppesed to after the fact. 
 
-CEP allows for multiple sources of data. 
 
 #### BPM
 Management of Business Processes. Aims at improving processes. (Because reasons.) That's why Wikipedia says it's a "process optimization process".
@@ -42,22 +41,18 @@ BPM beschäftigt sich mit einzelnen Prozessen eines "Business". CEP schafft es z
 Insbesondere 
 
 ## Problemstellung
-### Posed Questions
+### Fragestellung
 > Welches Problem löst Ihr in Eurem Projekt? Hier bitte auch die zugeordnete Process-Engine mit einbauen, sprich das Problem für Eure Engine "instanziieren".
 
-* Wir verbinden zwei Softwares miteinander.
-* Wir verbinden sie via REST APIs
-* 
+Auf einfachster Ebene gesprochen, verbindet die entwickelte Software zwei Anwendungen. Auf der einen Seite eine CEP-Engine, auf der anderen eine BPM-Software. Beides sind Open-Source Projekte. Die CEP-Engine, Unicorn, entwickelt vom Hasso-Plattner-Institue in Potsdam wurde in Java geschrieben und läuft auf einem Apache Tomcat Server. ProcessMaker, entwickelt durch ProcessMaker Inc., ist hauptsächlich in PHP geschrieben. Ein Server für ProcessMaker ist nicht vorgegeben, doch Apache HTTP Server wird empfohlen und in der Dokumentation verwendet. Durch die Server Architektur bringen beide Komponenten REST-APIs mit sich, sodass eine Middleware die naheliegendste Entscheidung war. 
 
+Schon von der Teminologie her bringen sowohl Complex Events als auch BPMN *events* mit. In Unicorn können Queries erstellt werden, die auf eine Abfolge von eingehenden Events reagieren. Ein solches, aus mehreren Granulaten bestehendes, Event nennt man Komplexes Event. Die Daten der einzelnen Events und den Typ und die ID des Komplexen Events, können dann an einen vorbestimmten Ort (z.B. via REST-API) übergeben werden. Events in BPMN repräsentieren Dinge, die sich Ereignen, wie zum Beispiel, das Eingehen einer Bestellung. BPMN Events teilen sich in drei Typen auf: Start, Stopp und Intermediate. Events können dabei jeweils fangend (Catching) oder werfend (Throwing) sein. Darüber hinaus gibt es weitere Klassifizierungen, die aber hier keine weitere Rolle spielen sollen. 
 
-### Aufgabenstellung
-*Aus den Intro-Slides*
+Das Ziel war, die Events beider Anwendungen zu verknüpfen und insbesondere für die BPMN-Seite Schnittstellen für jeden Typen, sowohl Catching als auch Throwing zu haben. Die schlussendliche Funktionalität sollte beinhalten, ein Complexes Event an ProcessMaker zu senden (und dadurch einen Prozess zu starten, zu beenden oder zwischendurch zu beeinflussen) und von ProcessMaker aus ein Event an Unicorn zu senden und es in den Event-Fluss einzugliedern. 
 
-> Primary goal: Extend an existing execution engine for BPMN models
-> 
-> * Import of extended process models from the process repository
-> * Sending produced events to a CEP engine
-> * Receiving and reacting on events matched by a CEP engine
+Eines der größeren Probleme im Verlauf des Projekts war, dass die API von ProcessMaker keine Möglichkeit zur Manipulation von Events bereitstellt. Das nächstebeste was BPMN bietet und durch die API von ProcessMaker zu erreichen ist, sind Aktivitäten (Activity). (Diskussion im Abschnitt "Verlauf des Projekts".) Aktivitäten in BPMN stellen zu erledigende Aufgaben dar und sind daher semantisch nicht ganz akurat auf Komplexe Events abzubilden. Aktivitäten sind in ProcessMaker konkreten Nutzern oder Nutzergruppen des Systems zugeordnet und müssen entlang des Prozessablaufs geroutet werden. Sowohl das Abarbeiten als auch das routen sind via der API verfügbar. 
+
+Das neue Ziel war weiterhin Komplexe Events von Unicorn an ProcessMaker und zurück zu senden, in ProcessMaker aber Aktivitäten zu nutzen um das Verhalten von Events nach außen zu simulieren. Eingehende Events lassen sich von der Middleware auffangen, an den Aktivitäten Endpoint pushen und von der Middleware automatisch weiter routen. Werfende Events zu simulieren ist nicht ohne weiteres möglich, nicht zuletzt, weil die API keine Callbacks ermöglicht. Aber eine geroutete Aktivität landet in der Inbox des zuständigen Nutzers und diese ist wiederum per API abzufragen. Somit polled die Middleware die Inbox eines designierten Unicorn-Nutzers und pushed gegebenenfalls ein Event in den Datenfluss von Unicron. 
 
 
 ## Verlauf des Projektes
@@ -199,3 +194,10 @@ docker-compose up --build
 
 ```
 ### Manual
+
+# Bullshit und Anhang
+| | ![Unicorn Logo](img/unicorn.png) | EDPE | ![ProcessMaker Logo](img/pm.png) |
+| :--- | --- | --- | --- |
+| Engine | Esper | Django | Zend |
+| Language | Java | Python | PHP |
+| LOC | N.a.N. | ~500 | > 10000 |
