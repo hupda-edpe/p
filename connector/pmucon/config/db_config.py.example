@@ -1,0 +1,10 @@
+#! Python
+
+DEFAULT = {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'django_db',
+        'USER': 'django',
+        'PASSWORD': '123456',
+        'HOST': '172.19.0.2',
+        'PORT': 3306
+    }

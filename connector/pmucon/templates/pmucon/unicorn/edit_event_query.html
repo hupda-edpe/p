@@ -1,0 +1,9 @@
+<form action="{% url 'edit_event_query' query.id %}" method="post">
+    <p>Query Title:</p>
+    <input type="text" name="title" value="{{ query.title }}">
+    <p>Query String:</p>
+    <textarea name="query_string" rows="15" cols="100">{{ query.query_string }}</textarea>
+    <input type="submit" value="Submit">
+    {% csrf_token %}
+</form>
+<a href="{% url 'list_event_queries' %}">Cancel</a>
