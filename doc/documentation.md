@@ -63,11 +63,25 @@ Das neue Ziel war weiterhin Komplexe Events von Unicorn an ProcessMaker und zur�
 ## Verlauf des Projektes
 
 ### Planung
-Die Planung zu Anfang war sehr vage. Es gab keine festgelegte Programmiersprache, keine Architektur, kein Klassendiagrammm, .... 
+Die Milestones waren den gesamten Verlauf des Projekts über sehr grob gehalten. Nicht zuletzt, da wir als einziges Projekt Management Tool GitHub hatten und mit den dortigen Werkzeugen *Wiki* und *Issues* gearbeitet haben. So gab es zu Beginn einen Sechsschrittigen Plan im Wiki, der wie folt aussah.
 
-Das macht es schwer von der Planung abzuweichen. Vieles war try-and-error und *Python* war eine schnelle Lösung um auszuprobieren. Als es dann die basis funktionalität in Python gab, wurde das Framework (Django) als neuer untergrund gewählt und das Haus darauf umgezogen. 
+> 1. **Setting up the two parallel systems** *Until 15.05.*
+> 	* Create (Docker) Image, preferably Debian
+>	* Install Dependencies and Unicorn & Processmaker
+>	* Setup coding environment
+> 2. **Identifying Interfaces of the two systems** *Until 22.05.*
+> 	* Make familiar with interface documentation
+> 	* Simple tryout with small scripts and examples
+> 3. **Normalising the data and rudimentary communication between systems** *Until 31.05.*
+> 4. Eliminating the kinks, testing, debugging
+> 5. Sophisticating the communication and broadening of the possibilities
+> 6. Further Testing, Debugging
+> 
+> <div style="text-align: right; font-style: italic;"><a href="https://github.com/hupda-edpe/p/wiki/Project">https://github.com/hupda-edpe/p/wiki/Project</a></div>
 
-Was das Endprodukt können sollte, hatten wir in der ursprünglichen Planung aufgelistet und es zwischen drin, nachdem die Möglichkeiten der ProcessMaker API feststanden, erweitert. 
+Enstanden ist dieser Plan vorwiegend aus den bereitgestellten Folien mit der Aufgabenstellung und dem generellen Grundgerüßt, das für fast jedes Setup von Applikationen notwendig ist. Während des Projekts wurde lediglich drei bis vier Male mit der konkreten Planung gearbeitet, aber die einzelnen Schritte und die Abfolge dieser, stimmten mit der Realität überein. Im Verlaufe der einzelnen Phasen, sind diese nach Bedarf präzisiert und arbeitsteilig abgearbeitet worden. <br>
+Auffällig ist, das in der Planung keine Entscheidungen beziehungsweise konkreten Aussagen zum Endgültigen Produkt sind (z.B. Middleware oder die Nutzung von APIs). Architektur und Scope wären zu Beginn sicherlich auch mit relativer Genauigkeit vorhersehbar gewesen, schien aber zweitrangig gegenüber dem vergleichsweise hohen Setup-Aufwand der beiden bestehenden Software Projekte. Erst nach erfolgreichem zum-laufen-bringen von Unicorn und ProcessMaker ging es um die effizienteste Variante, wie diese zu verknüpfen sind.<br>
+Diese herangehensweise ist prototypisch für viele weitere Planungs-Entscheidungen des Projekts. So kamen weitere Wiki-Seiten dazu, die sowohl den theoretischen Ablauf für das arbeiten mit Aktivitäten, als auch den API-spezifischen Ablauf dokumentierten. Je weiter das Projekt fortschritt, desto klarer wurde die Aufgabenteilung im Team und die eigentliche Planung und Dokumentation trat in den Hintergrund, sodass gegen Ende des Projektes durch direkte Kommunikation die anstehenden Aufgaben leicht abgearbeitet werden konnten. 
 
 
 ### Workflow
