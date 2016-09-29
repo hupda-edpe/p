@@ -197,25 +197,58 @@ Das hatte außerdem den Vorteil, dass man die Middleware selber leicht über ein
 
 ## Architektur des ProcessMaker-Unicorn-Connectors
 
+Der so genannte ProcessMaker-Unicorn-Connector ist ein mit Django aufgesetzter
+Webserver, der die jeweiligen REST-APIs miteinander verbindet.
 
-Ab dann waren es die Endpoints der API die in einer eigenen Wrapper Klasse aufrufbar gemacht wurden und auf komplexere Funktionen erweitert. Von vornerein geplant war der Wrapper als Modell allerdings nicht. 
+### OAuth
+Um auf die API von ProcessMaker zugreifen zu können, muss sich eine Anwendung
+erst von einem User registrieren lassen und erhält so eine Client ID und Secret.
+Damit lässt sich dann ein Token von ProcessMaker generieren lassen, mit dem sich
+die Anwendung bei HTTP Requests authentifizieren kann.
+Diese Funktionalität ist im Pythonmodul *pm_auth.py* implementiert. Der Token
+wird dabei lokal gespeichert und falls nötig aktualisiert oder neu generiert.
 
-Das ein Unicorn Wrapper entstand, war ebenfalls nicht teil des initialen Plans, aber ergibt in anbetracht der Tatsache, dass unsere Lösung eine eigenständige Middleware ist, Sinn. 
+Für Unicorn waren keine Maßnahmen zur Authentifizierung nötig.
 
+### APIs
+Die API von ProcessMaker gliedert sich in drei Bereiche:
+* Administration
+* Designer
+* Cases
+Ersterer dient dazu User, Gruppen, Rollen und Systemeinstellungen von ProcessMaker
+zu verwalten. Dieser Aspekt wird von unserer Middleware nicht benutzt.
+Der Bereich Designer stellt Endpunkte bereit mit denen man Prozessmodelle
+verwalten und bearbeiten kann.
+Im Prototyp haben wir Teile davon verwendet, um die Tasks aufzulisten, mit denen
+man einen neuen Prozessablauf starten kann.
+Diese Funktionalität wird so nicht mehr benötigt, allerdings brauchen wir dafür
+die Möglichkeit die Beschreibung von einem modellierten Task auszulesen, was
+sich über diesen Bereich der API realisieren lässt.
+Der letzte Bereich, Cases, ist der wohl wichtigste für unsere Anwendung.
+Hier sind alle Endpunkte veranlagt mit denen man Prozessabläufe steuern kann
+und Prozessvariablen ein- und auslesen kann. 
+Im Modul *pm_wrapper.py* sind die von uns benötigten Endpunkte gekapselt.
 
-### Posed Questions
-> * Tragweite des Produkts
-> * umgesetzte Funktionen
-> * Grenzen...
+Die API von Unicorn ist etwas simpler zu bedienen.
+Es lassen sich bequem Events posten, EventTypes und EventQueries erstellen,
+bearbeiten und löschen und für letztere eine Callback URL angeben.
+Implementiert ist die Schnittstelle im Modul *unicorn_wrapper.py*.
 
-### Architektur
-* Middelware. 
-* Server der beide APIs verbindet
-* Fasaden (Wrapper) zu beiden Seiten hin.
+Für ProcessMaker gibt es im dazugehörigen Wiki eine extensive Dokumentation
+der Endpunkte, wohingegen wir für Unicorn nichts vergleichbares finden konnten.
+Glücklicherweise sind in den Unicorn eigenen Unittests Beispiele, die die
+Bedienung der API hinreichend erklären.
 
-Besser wäre: Beide Engines so modifiezieren, dass sie direkt miteinander reden. (Push/Pull) Bzw. Eine Software so zu erweitern, dass sie mit der anderen reden kann. 
+### Datenmodell
+Unicorn:
+Event, EventType(+EventVariable), EventQuery.
 
-### Setup
+PM:
+Case, CaseVariable
+
+TODO: Entweder hier oder im Code besser dokumentieren (oder beides).
+
+### Setup (Docker-Kontext..)
 Using container was a good solution, especially in the beginning the circumstances weren't clear. (see Workflow). Containers offer several advantages:
 
 * Easy (re)installs for all team members
@@ -223,6 +256,21 @@ Using container was a good solution, especially in the beginning the circumstanc
 * No system requirements, version incompatablities, ... 
 * Easyly transferable due to small file size (compared to VMs)
 * No IDE required.
+
+### Implementierte Use-Cases
+
+* Blocking/Nonblocking
+* Intermediate
+* Inter-Prozess (Start Tasks)
+
+### Konfiguration
+
+* Dezidierter Unicorn-User
+* JSON in Beschreibung von Tasks
+* Mapping von CaseVariables und EventVariables
+* Richtige Benennung von Variablen, Tasks, EventTypes, usw.
+
+
 
 ## Reflektion
 ### Posed Questions
