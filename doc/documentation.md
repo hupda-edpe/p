@@ -55,7 +55,7 @@ Schon von der Teminologie her bringen sowohl Complex Events als auch BPMN *event
 
 Das Ziel war, die Events beider Anwendungen zu verknüpfen und insbesondere für die BPMN-Seite Schnittstellen für jeden Typen, sowohl Catching als auch Throwing zu haben. Die schlussendliche Funktionalität sollte beinhalten, ein Complexes Event an ProcessMaker zu senden (und dadurch einen Prozess zu starten, zu beenden oder zwischendurch zu beeinflussen) und von ProcessMaker aus ein Event an Unicorn zu senden und es in den Event-Fluss einzugliedern. 
 
-Eines der größeren Probleme im Verlauf des Projekts war, dass die API von ProcessMaker keine Möglichkeit zur Manipulation von Events bereitstellt. Das nächstebeste was BPMN bietet und durch die API von ProcessMaker zu erreichen ist, sind Aktivitäten (Activity). (Diskussion im Abschnitt "Verlauf des Projekts".) Aktivitäten in BPMN stellen zu erledigende Aufgaben dar und sind daher semantisch nicht ganz akurat auf Komplexe Events abzubilden. Aktivitäten sind in ProcessMaker konkreten Nutzern oder Nutzergruppen des Systems zugeordnet und müssen entlang des Prozessablaufs geroutet werden. Sowohl das Abarbeiten als auch das routen sind via der API verfügbar. 
+### Diesen Absatz würde ich aus Problemstellung nehmen und wo anders einordnen, ggf. inhaltlich auseinanderziehen
 
 Das neue Ziel war weiterhin Komplexe Events von Unicorn an ProcessMaker und zurück zu senden, in ProcessMaker aber Aktivitäten zu nutzen um das Verhalten von Events nach außen zu simulieren. Eingehende Events lassen sich von der Middleware auffangen, an den Aktivitäten Endpoint pushen und von der Middleware automatisch weiter routen. Werfende Events zu simulieren ist nicht ohne weiteres möglich, nicht zuletzt, weil die API keine Callbacks ermöglicht. Aber eine geroutete Aktivität landet in der Inbox des zuständigen Nutzers und diese ist wiederum per API abzufragen. Somit polled die Middleware die Inbox eines designierten Unicorn-Nutzers und pushed gegebenenfalls ein Event in den Datenfluss von Unicron. 
 
@@ -68,10 +68,17 @@ Die Planung zu Anfang war sehr vage. Es gab keine festgelegte Programmiersprache
 Das macht es schwer von der Planung abzuweichen. Vieles war try-and-error und *Python* war eine schnelle Lösung um auszuprobieren. Als es dann die basis funktionalität in Python gab, wurde das Framework (Django) als neuer untergrund gewählt und das Haus darauf umgezogen. 
 
 Was das Endprodukt können sollte, hatten wir in der ursprünglichen Planung aufgelistet und es zwischen drin, nachdem die Möglichkeiten der ProcessMaker API feststanden, erweitert. 
-Ab dann waren es die Endpoints der API die in einer eigenen Wrapper Klasse aufrufbar gemacht wurden und auf komplexere Funktionen erweitert. Von vornerein geplant war der Wrapper als Modell allerdings nicht. 
 
-Das ein Unicorn Wrapper entstand, war ebenfalls nicht teil des initialen Plans, aber ergibt in anbetracht der Tatsache, dass unsere Lösung eine eigenständige Middleware ist, Sinn. 
 
+### Workflow
+* Different OSes (Linux / OS X)
+* Differnt editors (Sublime / Atom)
+* Same container software (Docker)
+* Repo / Versioning: GitHub
+* Inner-Team communication: 
+	* Mostly Threema
+	* Sometimes Mail
+	* Meetups - usually before meetings
 
 ### Setup
 #### Setting up containers (in general):
@@ -101,28 +108,45 @@ Das ein Unicorn Wrapper entstand, war ebenfalls nicht teil des initialen Plans, 
 	* Precompiling turned out to be smart, since the repository was removed from GitHub
 
 ### Kommunikation mit ProcessMaker
+
 Es stellte sich die Frage, wie wir mit ProcessMaker interagieren.
+
 #### BPMN in PM
 EventTypes und Events sind in Unicorn mittels BPMN definiert.
 Auch die Prozesse, einschließlich Tasks und Events sind in ProcessMaker mit BPMN modelliert.
 Es lag daher nahe, EventTypen zu modellieren, die für den Austausch zwischen Unicorn und PM gedacht sind. Es war zudem ein Bestreben diese BPMN Erweiterungen zwischen den drei Projektgruppen auszutauschen, so dass eine Interkompatiblität entsteht.
 Der Versuche eigene BPMN Erweiterungen in ProcessMaker einzuspeisen schlug allerdings in ganzer Linie fehl. Tatsächlich war es nicht mal möglich standardkonforme Modelle zu importieren, lediglich eigens aus ProcessMaker exportierte Prozesse ließen sich wieder importieren.
+
 #### Events
 Nachdem dieser erste Ansatz keine Früchte trug, stellte sich dennoch die Frage  mittels ProcessMaker Events die Kommunikation mit Unicorn zu steuern.
 Auch hier wurden wir enttäuscht, da es uns nicht einmal gelang Events aus zwei verschiedenen Prozessen innerhalb von ProcessMaker zu verbinden. An die REST-API waren Events nicht angebunden.
 
 Da Events auch seitens ProcessMaker über einen Pull-Mechanismus implementiert waren, den man eigenständig von außen z.B. mit einem Cronjob auslösen musste, wäre man möglicherweise über diesen Ansatz zu einer Lösung gekommen.
 Dieser Weg schien aber in erster Linie aus Trial and Error und Reverse Engineering zu bestehen und so ließen sich Zeitrahmen und Arbeitsumfang nicht abschätzen. Daher haben wir uns für die vielversprechendere Lösung über Tasks entschieden.
+
 #### Tasks
 Die REST-API für Tasks war gut dokumentiert und bot uns alle nötigen Möglichkeiten der Interaktion. Die Vermutung, dass die ProcessMaker eigene Weboberfläche selber über diese API mit der Execution Engine kommuniziert, ist sogar naheliegend.
 Leider war dies nicht der syntaktisch korrekte Ansatz, aber der einzige, der im Rahmen dieses Semesterprojektes als machbar wirkte.
 
-### Prototyp
-Dann haben wir erst mal einen Prototyp mit Python gebaut.
+TODO: Vorigen und folgenden Absatz zusammenführen.
+
+Aktivitäten in BPMN stellen zu erledigende Aufgaben dar und sind daher semantisch nicht ganz akurat auf Komplexe Events abzubilden. Aktivitäten sind in ProcessMaker konkreten Nutzern oder Nutzergruppen des Systems zugeordnet und müssen entlang des Prozessablaufs geroutet werden. Sowohl das Abarbeiten als auch das routen sind via der API verfügbar. 
+
+### Prototyp für ProcessMaker
+Da der generelle Ansatz zur Kommunikation mit ProcessMaker bereits eine Hürde war, haben wir uns dann dazu entschieden zunächst einen Prototyp zu implementieren um damit die Möglichkeiten der API auszuloten und zu testen. Desweiteren diente dies auch dazu unseren Zwischenstand und das bis dahin gesammelte Wissen über unsere spezifische Process Execution Engine den anderen Gruppen vorzustellen und zu demonstrieren.
+
+Um flexibel und interaktiv zu sein haben wir als Programmiersprache für den Prototyp Python gewählt.
+Das stellte sich als eine gute Wahl heraus, da wir so zügig zu einem funktionierenden Ergebnis gekommen sind.
+Außerdem haben wir damit einen guten Grundstein für die eigentliche Middleware, die das Ziel des Projektes war, gelegt.
+
 ### Django Middleware
-Und dann die Django Middleware.
+Bis zu diesem Zeitpunkt war lediglich die Seite richtung ProcessMaker abgedeckt.
+Da man beim Registrieren von EventQueries in Unicorn einen HTTP Endpoint als Callback angeben musste, war klar, dass wir irgendeine Form von HTTP Server anbieten mussten.
+Wir wollten Teile vom Prototyp wiederverwenden und uns nicht damit aufhalten, ein Callback-Interface für Unicorn selber zu implementieren, also haben wir uns dafür entschieden einen Django-Server aufzusetzen.
+Das hatte außerdem den Vorteil, dass man die Middleware selber leicht über eine Weboberfläche bedienen konnte.
 
 ### Obstacles
+### TODO: Dieser Abschnitt eventuell eher unter Reflektion?
 * ProcessMaker
 	* Buggy community Version, especially MySQL errors.
 		* Login DB didn't install
@@ -147,17 +171,15 @@ Und dann die Django Middleware.
 			* turned out not to be too bad. The Teams didn't intersect too much
 		* In the beginning we could sometimes only manage to have 1 team member present. 
 
-### Workflow
-* Different OSes (Linux / OS X)
-* Differnt editors (Sublime / Atom)
-* Same container software (Docker)
-* Repo / Versioning: GitHub
-* Inner-Team communication: 
-	* Mostly Threema
-	* Sometimes Mail
-	* Meetups - usually before meetings
 
-## Architektur und Scope
+## Architektur des ProcessMaker-Unicorn-Connectors
+
+
+Ab dann waren es die Endpoints der API die in einer eigenen Wrapper Klasse aufrufbar gemacht wurden und auf komplexere Funktionen erweitert. Von vornerein geplant war der Wrapper als Modell allerdings nicht. 
+
+Das ein Unicorn Wrapper entstand, war ebenfalls nicht teil des initialen Plans, aber ergibt in anbetracht der Tatsache, dass unsere Lösung eine eigenständige Middleware ist, Sinn. 
+
+
 ### Posed Questions
 > * Tragweite des Produkts
 > * umgesetzte Funktionen
@@ -178,8 +200,6 @@ Using container was a good solution, especially in the beginning the circumstanc
 * No system requirements, version incompatablities, ... 
 * Easyly transferable due to small file size (compared to VMs)
 * No IDE required.
-
-## Vorführung an einem Beispiel
 
 ## Reflektion
 ### Posed Questions
