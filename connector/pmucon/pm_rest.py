@@ -1,4 +1,4 @@
-""" This module is a simple wrapper for calling the ProcessMaker API.
+""" This is a simple REST wrapper for calling the ProcessMaker API.
 Connection details are extracted from config/pm_config.py and authentication
 is done via the pm_auth module.
 Some errorhandling is provided, but sane return values aren't guaranteed.
