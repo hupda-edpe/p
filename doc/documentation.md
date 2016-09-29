@@ -17,33 +17,42 @@
 
 ### Welche Bereiche sind betroffen?
 #### Complex Event Proccessing
-...oder kurz *CEP*. Dabei wir ein Fluss an Daten beziehungsweise Ereignissen (Events) aus einer oder mehreren Quellenzusammengeführt und in Echtzeit analysiert. Echtzeit deswegen, weil genau das es von herkömmlicher Analyse der Daten, nach dem aggregieren, abgrenzt. <br>
+...oder kurz *CEP*. Dabei wir ein Fluss an Daten beziehungsweise Ereignissen (Events) aus einer oder mehreren Quellen zusammengeführt und in Echtzeit analysiert. Echtzeit deswegen, weil genau das es von herkömmlicher Analyse der Daten, nach dem aggregieren, abgrenzt. <br>
 Wissen, dass aus der Kombination mehrerer Ereignisse gewonnen wird, sind Komplexe Ereignisse. Ereignisse sind nicht weiter spezifiziert oder limitiert und können von Wetter-Daten über Börsentrends bis zu Netzwerk-Logs reichen. <br>
-Bei der Analyse können sowohl die konkreten Werte, als auch der Unterschied zwischen ihnen (Delta) eine Rolle spielen. <br> 
-Um Zusammenhänge und mögliche Schlüsse verlässlicher aufdecken, respektive treffen zu können, ist eine kritische Menge an Daten von Nöten. Ein kontinuerlicher Strom an zusammenhängenden Daten wird daher als Voraussetzung angenommen. <span style="color: red">#bullshit</span>
+Bei der Analyse spielen sowohl die konkreten Werte, als auch der Unterschied zwischen ihnen (Delta) eine Rolle. <br> 
+Um Zusammenhänge und mögliche Schlüsse verlässlicher aufdecken, respektive treffen zu können, ist eine kritische Menge an Daten von Nöten. Ein kontinuerlicher Strom an zusammenhängenden Daten wird daher als Voraussetzung angenommen. 
 
 Es lassen sich alleinig aus der Beschreibung von CEP keine Rückschlüsse auf potentielle Nutzer oder Andendungsbereiche ziehen, denn relativ große Mengen an Daten, lassen sich, mindestens durch logs, heutzutage sehr leicht produzieren oder aggregieren. Ausgehend davon ist es theoretisch allen Menschen möglich, ihre Daten durch eine CEP zu schleusen und Schlüsse über ihr System, ihre Prozesse oder Strategien zu ziehen. 
 
 #### Process Execution
-Als Process Execution Engine bezeichnet man Software, die darauf abzielt Geschäftsprozesse zu unterstützen und Teile davon gegebenen Falls zu automatisieren.
-Um diese Geschäftsprozesse zu modellieren wird BPMN benutzt.
-BPMN ist ... (wird auch im Bereich "Problemstellung" erklärt).
-Man möchte außerdem Analysen über die Prozesse führen um sie dann eventuell besser zu modellieren und umzustrukturieren.
+Als Process Execution Engine bezeichnet man Software, die darauf abzielt (Geschäfts-) Prozesse zu unterstützen und Teile davon gegebenen Falls zu automatisieren. Diese Prozesse sind im Vorfeld modelliert und bilden in der Regel häufig auftretende Abläufe ab. Zur Modellierung wird eine besondere Sprache verwendet, in unserem Fall *Business Process Model and Notation* (BPMN). Alternativ gibt es weitere Sprachen, wie z.B. *Business Process Execution Language* (BPEL). Ein Prozess selber kann unter anderem verschiedene Ereignisse und Aktivitäten beinhalten, sowie Schnittstellen nach außen. Ob diese zu Menschen oder Maschienen sind, Daten senden oder empfangen spielt dabei keine Rolle. 
+Die Engine hilft dabei, die vorhandenen Prozesse aus- und durchzuführen, aber auch zu analysieren und Möglichkeiten zur Verbesserung aufzuzeigen.
 
-Process Execution Engines können zum Beispiel benutzt werden, um eine Bestellung in einem Onlineshop oder eine Supportanfrage zu unterstützen und umzusetzen. Tolles Beispiel von Prof. Weidlich: Zalando (TODO: hier nochmal beschreiben).
-Für Supportmitarbeiter kann das dann wie ein Ticketsystem aussehen, bei dem Anfragen automatisch verteilt und weitergeleitet werden.
+Process Execution Engines können zum Beispiel benutzt werden, um eine Bestellung in einem Onlineshop oder eine Supportanfrage zu unterstützen und umzusetzen. Ein Prozess kann dabei wie folgt modelliert sein.
+
+> **TO DO**
+> 
+> Bild!
+
+Ein Kunde legt in einem Webshop ein Produkt in den Warenkorb und klickt auf "Jetzt bestellen". Der Prozess beginnt damit, zu überprüfen ob der Warenkorb nicht leer ist. Ist die Bedingung erfüllt geht es weiter zur Kasse. Der Shop bietet mehrere Zahlungsmöglichkeiten und der Kunde wählt seine aus. Der Prozess wartet nun, bis er bestätigung der Zahlung hat. Ob diese sofort (Kreditkarte) erfolgt oder erst einige Tage später (Kauf auf Rechnung) ist dabei egal. In dem Moment in dem die Besätigung erfolgt, wird geprüft ob und wenn ja in welchem Lager die Waren verfügbar sind. Angenommen die Waren sind alle im gleichen Lager vorrätig, bekommt ein Mitarbeiter eine Liste in welchem Regal welches Produkt liegt und kann anfangen das Paket zu packen. Sobald der aufgedruckte Barcode auf dem Paket gescanned wurde, bekommt der Kunde eine E-Mail mit der Versandbenachrichtigung. Bei Ankunft des Pakets wird der Barcode erneut gescanned und der Prozess mit der Unterschrift des Kunden abgeschlossen. 
+
+~~Für Supportmitarbeiter kann das dann wie ein Ticketsystem aussehen, bei dem Anfragen automatisch verteilt und weitergeleitet werden.~~
 
 #### EventDriven-BPM
-Theoretically this kind of project could be used for all kinds of appications. The only two requirements are somewhat large amounts of data (which any sensor can produce) and a recurring process that can be modeled in BPMN. Seeing the amount of work that is required, it is probably not going to be used by your garden-variety home-automation hobbiest, but it would be possible. 
-
-More realistically businesses will usese this kind of software to further automate their behavior and integrate data driven processes or decisions. Future appilcations might even hold the possibility of Event Driven Process Modeling. 
+Durch die sehr offenen use cases der beiden betroffenen Bereiche, ergeben sich auch in der Schnittstelle der beiden noch eine Unzahl verschiedener Anwendungen. Laut Theorie wäre es auch dem Hobby-Tüftler für seine Heim-Automation möglich Event-Driven-Process-Models zu verwenden, jedoch scheint der Aufwand kaum in irgendeiner Relation zum nutzen zu stehen. Wesentlich wahrscheinlicher ist die Anwendung ab kleinen bis mittelständischen Unternehmen oder auch Start-Ups. Der Hautpaufwand für Unternehmen, die noch keine Prozess-Modelle nutzen besteht dann darin, die Abläufe des Tagesgeschäft in solche zu übersetzen. Start-Ups hingegen haben die Möglichkeit, gleich von Beginn, ihre Geschäfte Event-Driven anzulegen. In beiden Fällen gibt es den Unternehmen - ob etabliert oder nicht - die Möglichkeit ihre Prozesse zu analysieren, anzupassen und zu optimieren. <br>
 Zum Beispiel kann bei einer Bestellung bei Zalando auf einen Event Stream für Verkehrsdaten innerhalb des Business Process zugegriffen werden und anhand der Auswertung entschieden werden, an welches Lager die Bestellung weitergeleitet wird.
 Umgekehrt können auch die Lieferfahreuge wiederum Events für die CEP Engine produzieren, die dann bessere Einsicht in die Verkehrslage ermöglichen.
 
 ### Wieso ist es interessant sich damit zu beschäftigen?
-BPM beschäftigt sich mit einzelnen Prozessen eines "Business". CEP schafft es zusammenhänge zwischen vielen (zu vielen für Menschen?) Daten automatisiert herzustellen. Das zusammenspiel der Beiden, ermöglicht ein ganzheitlicheres Bild auf Business abläufe und zusammenhänge zwischen diesen aufzuzeigen. Dies erfordert (noch) selbstverständlich Menschliches eingreifen. 
+> **TO DO**
+> 
+> * feritg machen...
+> * "Future appilcations might even hold the possibility of Event Driven Process Modeling."
 
-Insbesondere 
+
+BPM beschäftigt sich mit einzelnen Prozessen eines "Business". CEP schafft es zusammenhänge zwischen vielen (zu vielen für Menschen?) Daten automatisiert herzustellen. Das Zusammenspiel der Beiden, ermöglicht ein ganzheitlicheres Bild auf Businessabläufe und Zusammenhänge zwischen diesen aufzuzeigen. Dies erfordert (noch) selbstverständlich Menschliches eingreifen. 
+
+Insbesondere ...
 
 ## Problemstellung
 ### Fragestellung
