@@ -103,11 +103,24 @@ Das ein Unicorn Wrapper entstand, war ebenfalls nicht teil des initialen Plans, 
 ### Kommunikation mit ProcessMaker
 Es stellte sich die Frage, wie wir mit ProcessMaker interagieren.
 #### BPMN in PM
+EventTypes und Events sind in Unicorn mittels BPMN definiert.
+Auch die Prozesse, einschließlich Tasks und Events sind in ProcessMaker mit BPMN modelliert.
+Es lag daher nahe, EventTypen zu modellieren, die für den Austausch zwischen Unicorn und PM gedacht sind. Es war zudem ein Bestreben diese BPMN Erweiterungen zwischen den drei Projektgruppen auszutauschen, so dass eine Interkompatiblität entsteht.
+Der Versuche eigene BPMN Erweiterungen in ProcessMaker einzuspeisen schlug allerdings in ganzer Linie fehl. Tatsächlich war es nicht mal möglich standardkonforme Modelle zu importieren, lediglich eigens aus ProcessMaker exportierte Prozesse ließen sich wieder importieren.
 #### Events
-Vom BPMN Modell her ergab es Sinn
+Nachdem dieser erste Ansatz keine Früchte trug, stellte sich dennoch die Frage  mittels ProcessMaker Events die Kommunikation mit Unicorn zu steuern.
+Auch hier wurden wir enttäuscht, da es uns nicht einmal gelang Events aus zwei verschiedenen Prozessen innerhalb von ProcessMaker zu verbinden. An die REST-API waren Events nicht angebunden.
+
+Da Events auch seitens ProcessMaker über einen Pull-Mechanismus implementiert waren, den man eigenständig von außen z.B. mit einem Cronjob auslösen musste, wäre man möglicherweise über diesen Ansatz zu einer Lösung gekommen.
+Dieser Weg schien aber in erster Linie aus Trial and Error und Reverse Engineering zu bestehen und so ließen sich Zeitrahmen und Arbeitsumfang nicht abschätzen. Daher haben wir uns für die vielversprechendere Lösung über Tasks entschieden.
 #### Tasks
+Die REST-API für Tasks war gut dokumentiert und bot uns alle nötigen Möglichkeiten der Interaktion. Die Vermutung, dass die ProcessMaker eigene Weboberfläche selber über diese API mit der Execution Engine kommuniziert, ist sogar naheliegend.
+Leider war dies nicht der syntaktisch korrekte Ansatz, aber der einzige, der im Rahmen dieses Semesterprojektes als machbar wirkte.
+
 ### Prototyp
+Dann haben wir erst mal einen Prototyp mit Python gebaut.
 ### Django Middleware
+Und dann die Django Middleware.
 
 ### Obstacles
 * ProcessMaker
