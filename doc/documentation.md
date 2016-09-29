@@ -24,16 +24,21 @@ Um Zusammenhänge und mögliche Schlüsse verlässlicher aufdecken, respektive t
 
 Es lassen sich alleinig aus der Beschreibung von CEP keine Rückschlüsse auf potentielle Nutzer oder Andendungsbereiche ziehen, denn relativ große Mengen an Daten, lassen sich, mindestens durch logs, heutzutage sehr leicht produzieren oder aggregieren. Ausgehend davon ist es theoretisch allen Menschen möglich, ihre Daten durch eine CEP zu schleusen und Schlüsse über ihr System, ihre Prozesse oder Strategien zu ziehen. 
 
+#### Process Execution
+Als Process Execution Engine bezeichnet man Software, die darauf abzielt Geschäftsprozesse zu unterstützen und Teile davon gegebenen Falls zu automatisieren.
+Um diese Geschäftsprozesse zu modellieren wird BPMN benutzt.
+BPMN ist ... (wird auch im Bereich "Problemstellung" erklärt).
+Man möchte außerdem Analysen über die Prozesse führen um sie dann eventuell besser zu modellieren und umzustrukturieren.
 
-
-
-#### BPM
-Management of Business Processes. Aims at improving processes. (Because reasons.) That's why Wikipedia says it's a "process optimization process".
+Process Execution Engines können zum Beispiel benutzt werden, um eine Bestellung in einem Onlineshop oder eine Supportanfrage zu unterstützen und umzusetzen. Tolles Beispiel von Prof. Weidlich: Zalando (TODO: hier nochmal beschreiben).
+Für Supportmitarbeiter kann das dann wie ein Ticketsystem aussehen, bei dem Anfragen automatisch verteilt und weitergeleitet werden.
 
 #### EventDriven-BPM
 Theoretically this kind of project could be used for all kinds of appications. The only two requirements are somewhat large amounts of data (which any sensor can produce) and a recurring process that can be modeled in BPMN. Seeing the amount of work that is required, it is probably not going to be used by your garden-variety home-automation hobbiest, but it would be possible. 
 
 More realistically businesses will usese this kind of software to further automate their behavior and integrate data driven processes or decisions. Future appilcations might even hold the possibility of Event Driven Process Modeling. 
+Zum Beispiel kann bei einer Bestellung bei Zalando auf einen Event Stream für Verkehrsdaten innerhalb des Business Process zugegriffen werden und anhand der Auswertung entschieden werden, an welches Lager die Bestellung weitergeleitet wird.
+Umgekehrt können auch die Lieferfahreuge wiederum Events für die CEP Engine produzieren, die dann bessere Einsicht in die Verkehrslage ermöglichen.
 
 ### Wieso ist es interessant sich damit zu beschäftigen?
 BPM beschäftigt sich mit einzelnen Prozessen eines "Business". CEP schafft es zusammenhänge zwischen vielen (zu vielen für Menschen?) Daten automatisiert herzustellen. Das zusammenspiel der Beiden, ermöglicht ein ganzheitlicheres Bild auf Business abläufe und zusammenhänge zwischen diesen aufzuzeigen. Dies erfordert (noch) selbstverständlich Menschliches eingreifen. 
@@ -44,7 +49,7 @@ Insbesondere
 ### Fragestellung
 > Welches Problem löst Ihr in Eurem Projekt? Hier bitte auch die zugeordnete Process-Engine mit einbauen, sprich das Problem für Eure Engine "instanziieren".
 
-Auf einfachster Ebene gesprochen, verbindet die entwickelte Software zwei Anwendungen. Auf der einen Seite eine CEP-Engine, auf der anderen eine BPM-Software. Beides sind Open-Source Projekte. Die CEP-Engine, Unicorn, entwickelt vom Hasso-Plattner-Institue in Potsdam wurde in Java geschrieben und läuft auf einem Apache Tomcat Server. ProcessMaker, entwickelt durch ProcessMaker Inc., ist hauptsächlich in PHP geschrieben. Ein Server für ProcessMaker ist nicht vorgegeben, doch Apache HTTP Server wird empfohlen und in der Dokumentation verwendet. Durch die Server Architektur bringen beide Komponenten REST-APIs mit sich, sodass eine Middleware die naheliegendste Entscheidung war. 
+Auf einfachster Ebene gesprochen, verbindet die entwickelte Software zwei Anwendungen. Auf der einen Seite eine CEP-Engine, auf der anderen eine BPM-Software. Beides sind Open-Source Projekte. Die CEP-Engine, Unicorn, entwickelt vom Hasso-Plattner-Institut in Potsdam wurde in Java geschrieben und läuft auf einem Apache Tomcat Server. ProcessMaker, entwickelt durch ProcessMaker Inc., ist hauptsächlich in PHP geschrieben. Ein Server für ProcessMaker ist nicht vorgegeben, doch Apache HTTP Server wird empfohlen und in der Dokumentation verwendet. Durch die Server Architektur bringen beide Komponenten REST-APIs mit sich, sodass eine Middleware die naheliegendste Entscheidung war. 
 
 Schon von der Teminologie her bringen sowohl Complex Events als auch BPMN *events* mit. In Unicorn können Queries erstellt werden, die auf eine Abfolge von eingehenden Events reagieren. Ein solches, aus mehreren Granulaten bestehendes, Event nennt man Komplexes Event. Die Daten der einzelnen Events und den Typ und die ID des Komplexen Events, können dann an einen vorbestimmten Ort (z.B. via REST-API) übergeben werden. Events in BPMN repräsentieren Dinge, die sich Ereignen, wie zum Beispiel, das Eingehen einer Bestellung. BPMN Events teilen sich in drei Typen auf: Start, Stopp und Intermediate. Events können dabei jeweils fangend (Catching) oder werfend (Throwing) sein. Darüber hinaus gibt es weitere Klassifizierungen, die aber hier keine weitere Rolle spielen sollen. 
 
@@ -56,10 +61,6 @@ Das neue Ziel war weiterhin Komplexe Events von Unicorn an ProcessMaker und zur�
 
 
 ## Verlauf des Projektes
-### Posed Questions
-> * Plan vs. Wirklichkeit
-> * Sackgassen
-> * untersuchte Lösungsansätze
 
 ### Planung
 Die Planung zu Anfang war sehr vage. Es gab keine festgelegte Programmiersprache, keine Architektur, kein Klassendiagrammm, .... 
@@ -70,6 +71,7 @@ Was das Endprodukt können sollte, hatten wir in der ursprünglichen Planung auf
 Ab dann waren es die Endpoints der API die in einer eigenen Wrapper Klasse aufrufbar gemacht wurden und auf komplexere Funktionen erweitert. Von vornerein geplant war der Wrapper als Modell allerdings nicht. 
 
 Das ein Unicorn Wrapper entstand, war ebenfalls nicht teil des initialen Plans, aber ergibt in anbetracht der Tatsache, dass unsere Lösung eine eigenständige Middleware ist, Sinn. 
+
 
 ### Setup
 #### Setting up containers (in general):
@@ -97,6 +99,15 @@ Das ein Unicorn Wrapper entstand, war ebenfalls nicht teil des initialen Plans, 
 	* Solution: Compiling the code and deploying the readily compiled `.war`
 	* For further development a more flexible solution should be implemented
 	* Precompiling turned out to be smart, since the repository was removed from GitHub
+
+### Kommunikation mit ProcessMaker
+Es stellte sich die Frage, wie wir mit ProcessMaker interagieren.
+#### BPMN in PM
+#### Events
+Vom BPMN Modell her ergab es Sinn
+#### Tasks
+### Prototyp
+### Django Middleware
 
 ### Obstacles
 * ProcessMaker
