@@ -195,26 +195,31 @@ Das hatte außerdem den Vorteil, dass man die Middleware selber leicht über ein
 		* In the beginning we could sometimes only manage to have 1 team member present. 
 
 
-## Architektur des ProcessMaker-Unicorn-Connectors
+## Architektur der Middleware
 
-Der so genannte ProcessMaker-Unicorn-Connector ist ein mit Django aufgesetzter
+Die von uns implementierte Middleware ist ein mit Django aufgesetzter
 Webserver, der die jeweiligen REST-APIs miteinander verbindet.
 
 ### OAuth
 Um auf die API von ProcessMaker zugreifen zu können, muss sich eine Anwendung
 erst von einem User registrieren lassen und erhält so eine Client ID und Secret.
-Damit lässt sich dann ein Token von ProcessMaker generieren lassen, mit dem sich
+Als dieser User ist dann die Middleware nach erfolgreicher Authentifizierung eingeloggt.
+Es empfiehlt sich daher einen dezidierten User für diesen Zweck anzulegen, im Folgenden *Unicorn User*,
+dessen Login-Daten in *unicorn_config.py* eingetragen werden müssen.
+Mit den Login-Daten und o.g. Client ID und Secret lässt sich dann
+ein Token von ProcessMaker generieren lassen, mit dem sich
 die Anwendung bei HTTP Requests authentifizieren kann.
-Diese Funktionalität ist im Pythonmodul *pm_auth.py* implementiert. Der Token
+Diese Funktionalität ist im Pythonmodul *pm_auth.py* implementiert. Das Token
 wird dabei lokal gespeichert und falls nötig aktualisiert oder neu generiert.
 
 Für Unicorn waren keine Maßnahmen zur Authentifizierung nötig.
 
 ### APIs
 Die API von ProcessMaker gliedert sich in drei Bereiche:
-* Administration
-* Designer
-* Cases
+> * Administration
+> * Designer
+> * Cases
+
 Ersterer dient dazu User, Gruppen, Rollen und Systemeinstellungen von ProcessMaker
 zu verwalten. Dieser Aspekt wird von unserer Middleware nicht benutzt.
 Der Bereich Designer stellt Endpunkte bereit mit denen man Prozessmodelle
@@ -236,7 +241,7 @@ Implementiert ist die Schnittstelle im Modul *unicorn_wrapper.py*.
 
 Für ProcessMaker gibt es im dazugehörigen Wiki eine extensive Dokumentation
 der Endpunkte, wohingegen wir für Unicorn nichts vergleichbares finden konnten.
-Glücklicherweise sind in den Unicorn eigenen Unittests Beispiele, die die
+Glücklicherweise sind in den Unit-Test von Unicorn Beispiele, die die
 Bedienung der API hinreichend erklären.
 
 ### Datenmodell
@@ -257,7 +262,29 @@ Using container was a good solution, especially in the beginning the circumstanc
 * Easyly transferable due to small file size (compared to VMs)
 * No IDE required.
 
-### Implementierte Use-Cases
+### Implementierte Use-Cases und Konfiguration
+
+In einem Prozessmodell müssen diejenigen Tasks, die als Schnittstelle zu Unicorn dienen,
+dem Unicorn User zugewiesen werden damit sie in dessen Inbox erscheinen.
+Ist ein solcher Task in einem Prozessablauf erreicht, kann die Middleware beim Pullen der offenen Cases
+somit feststellen, ob ein neues Event erzeugt werden soll.
+
+Damit ein Mapping zwischen den Tasks und EventTypes möglich ist und die Middleware weiß, wie sie mit dem Case umgehen soll,
+ist es nötig Informationen bereits im Modell an des Task zu hängen. Dafür dient uns das Description-Feld von den Tasks,
+welches wir über die Designer-API auslesen können.
+Erwartet wird von unserer Anwendung, dass sich dort ein JSON befindet, das beispielsweise so aussehen könnte:
+
+```json
+{
+  "blocking": true,
+  "event_type": "SomeType",
+  "start_task": "1234",
+  "start_process": "5678"
+}
+```
+
+...dies bedeutet jenes usw...
+
 
 * Blocking/Nonblocking
 * Intermediate
