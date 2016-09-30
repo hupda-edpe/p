@@ -69,31 +69,13 @@ Vorausgesetzt war die Arbeit mit GitHub und gegeben waren unterschiedliche Betri
 
 
 ### Setup
-#### Setting up containers (in general):
+>**Anmerkung**
+>
+> Bereits die Diskussion der Schwierigkeiten im Setup-Prozess mit drinnen. Evtl. ausbaufähig, d.h. mehr Details. 
+ 
 
-* Time consuming
-* Made initial debugging harder (Error could be on multile levels)
-	* Container config
-	* Software (ProcessMaker / Unicorn)
-	* Our own code
+Die Container zu Beginn aufzusetzen war um einiges umständlicher als ursprünglich geplant, nicht zuletzt, da es eine weitere potentielle Fehlerquelle darstellt. In Kombination mit der nicht ausgereiften ProcessMaker Software, war nicht immer klar, ob der Fehler an der Container Konfiguration oder im Quellcode von ProcessMaker lag. <br>Das Setup von ProcessMaker ist mit Docker Compose keine Schwierigkeit per se. Die Voraussetzungen spezifizieren ein Linux-Apache-MySQL-PHP (LAMP) Stack. Um die Architektur möglichst flach, also im Sinne der Container, zu halten, werden Server und Datenbank aufgeteilt. Ein Image mit einer Linux Installation und Apache mit PHP ist so fertig verfügbar, genauso wie eine MySQL Installation. Via Docker Compose werden die beiden Container verknüpft. Zwar fehlen in den von ProcessMaker gelieferten Systemvoraussetzungen einige Apache Module und Abhängigkeiten, diese sind jedoch dank Stack Overflow, mit einiger Recherche herausgefunden und nachinstalliert. Ebenso stimmte die Angabe des MySQL Treibers nicht. (`mysqlnd` ist angegeben, `pdo` wird aber im Code tatsächlich verwendet.)Ein weiteres großes Problem mit Docker war, dass Docker bis vor einigen Monaten auf OS X anders funktionierte als auf Linux. Docker hat auf OS X eine virtuelle Debian Maschine via VirtualBox installiert, auf welcher die Container ausgeführt wurden. Unter Linux laufen diese direkt auf dem System. Normalerweise führt das selten zu Problemen, in unserem Fall aber waren die Zugriffsrechte auf Ordner zwischen Host (OS X) und Client (Debian via VirtualBox) relevant. (Der Code sollte dynamisch geladen werden, um den Container nicht bei jeder Änderung im Quellcode neu initialisieren zu müssen.) Da Docker aber nur Nutzer mit der `uid` `1000` auf dem Host lesen und schreiben lässt, Apache aber den Nutzer `www-data` braucht, war der Fix dem  `www-data`-User die `uid` `1000` zu geben. Den Unicorn Container haben wir vorerst nicht selber aufgesetzt, sondern den im *Shared* Repository vorhandenen, verwendet. Da der Deployment-Prozess unter OS X, aus unbekannten Gründen, fehlschlug, die Kompilierung aber einwandfrei durchlief, haben wir die beiden Abschnitte getrennt und eine neue Umgebung mit vorkompilierter `.war`-Datei erschaffen. Weiterer Vorteil war, dass bei einer Neuinstallation des Unicorn-Containers nicht der ganze Kompilationsprozess erneut durchlaufen werden musste, sondern lediglich die `.war`-Datei in einen Shared Folder eingebunden wurde. 
 
-#### Setting up the PM Container:
-
-* Required a LAMP stack, which is easily done with Docker Compose
-	* A Linux image with Apache and PHP is readily available from Docker Hub
-	* A MySQL image is also readly available
-* Installing libraries, dependencies and requirements from ProcesMaker was a bit tricky and required a lot of Stackoverflow reading. 
-* The installation guide of ProcessMaker luckily is thourough, even though it misses a couple of requirements. 
-* Another big issue was the shared folder between host and image, due to usage rights. The Apache Server required `www-data` as owner whereas docker only allows the user with `uid 1000` to read/write host files. Setting the `uid` of `www-data` to `1000` solved the problem.
-
-#### Setting up the Unicorn Container:
-
-* At first: Didn't do it ourselves. We copies the Dockerfile from the `shared` repo.
-* Later modified it, due to issues on OS X
-	* Simplifying the script didn't work due to unknown reasons
-	* Solution: Compiling the code and deploying the readily compiled `.war`
-	* For further development a more flexible solution should be implemented
-	* Precompiling turned out to be smart, since the repository was removed from GitHub
 
 ### Kommunikation mit ProcessMaker
 
@@ -134,7 +116,13 @@ Wir wollten Teile vom Prototyp wiederverwenden und uns nicht damit aufhalten, ei
 Das hatte außerdem den Vorteil, dass man die Middleware selber leicht über eine Weboberfläche bedienen konnte.
 
 ### Obstacles
-### TODO: Dieser Abschnitt eventuell eher unter Reflektion?
+> **TODO** Dieser Abschnitt eventuell eher unter Reflektion?
+> 
+> **Anmerkung** (von Alex)
+> 
+> Würde ich nicht machen, dort ist eher die Reflektion des Scopes und des abgeschlossenen Projekts. Das hier sind eher Beschreibungen des Ablaufes und Entschdieungen die getorffen wurden um zum Ziel zu kommen. (Evtl. kann man das dann nochmal später aufgreifen, ob man es nicht hätte besser lösen können.)
+
+
 * ProcessMaker
 	* Buggy community Version, especially MySQL errors.
 		* Login DB didn't install
@@ -213,14 +201,14 @@ Case, CaseVariable
 
 TODO: Entweder hier oder im Code besser dokumentieren (oder beides).
 
-### Setup (Docker-Kontext..)
-Using container was a good solution, especially in the beginning the circumstances weren't clear. (see Workflow). Containers offer several advantages:
+### ~~Setup (Docker-Kontext..)~~
+~~Using container was a good solution, especially in the beginning the circumstances weren't clear. (see Workflow). Containers offer several advantages:~~
 
-* Easy (re)installs for all team members
-* Quick way to purge the system and start over
-* No system requirements, version incompatablities, ... 
-* Easyly transferable due to small file size (compared to VMs)
-* No IDE required.
+* ~~Easy (re)installs for all team members~~
+* ~~Quick way to purge the system and start over~~
+* ~~No system requirements, version incompatablities, ...~~
+* ~~Easyly transferable due to small file size (compared to VMs)~~
+* ~~No IDE required.~~
 
 ### Implementierte Use-Cases
 
