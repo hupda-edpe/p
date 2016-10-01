@@ -302,6 +302,69 @@ gestartet.
 Unabhängig davon werden die restlichen Werte aus dem Ergebnis als Variablen
 an den existierenden oder/und an den neu erzeugten Case weitergegeben.
 
+### Beispiel und Bedienung
+
+An dieser Stelle möchten wir ein Beispiel dafür geben, wie man die implementierte
+Funktionalität verwenden könnte. Das dient außerdem dazu, die Bedienung besser
+zu erklären.
+
+Nachdem die grundlegende Konfiguration vorgenommen ist, erstellen wir in ProcessMaker
+die User *Trainee* und *Supervisor*. Ersterer soll Texte erstellen erstellen können
+die der Supervisor dann überprüfen und ggf. abändern kann.
+Dafür sind zwei Prozesse nötig:
+
+* Proposal
+* Review
+
+In beiden werden die Variablen ID und Text erstellt.
+Im Proposal Prozess gibt es dann einen Task der an den User *Trainee* zugewiesen
+ist gefolgt von einem Task der ein Unicorn Event erzeugen soll.
+Der Review Prozess wird von einem Unicorn-Task gestartet und diesem folgen
+dann ein Task für den *Supervisor* und einer für Unicorn.
+
+Im Unicorn Task aus dem Proposal-Prozess tragen wir folgendes ein:
+```json
+{
+  "blocking": true,
+  "event_type": "Proposal",
+  "start_task": "<Start Task ID vom Review Prozess>",
+  "start_process": "<Review Prozess ID>"
+}
+```
+
+und im intermediate Unicorn Task aus dem Review-Prozess tragen wir ein:
+```json
+{
+  "blocking": false,
+  "event_type": "Review"
+}
+```
+
+Dann erstellen wir über die Weboberfläche von der Middleware die
+EventTypes Proposal und Review, beide mit den Variablen ID und Text.
+Und außerdem folgende EventQueries:
+
+```sql
+SELECT TasUid,ProUid,ID,Text FROM Proposal
+```
+
+und
+
+```sql
+SELECT A.AppUid AS AppUid, A.ID AS ID, B.Text AS Text
+FROM Pattern[ every A=Proposal
+-> B=Review(A.ID = B.ID)]
+```
+
+Erstellt nun der *Trainee* ein Textvorschlag wird dieser als Proposal Event
+an Unicorn weitergeleitet. Die erste Query sorgt dann dafür, dass der
+Review Prozess gestartet wird und der *Supervisor* bekommt so die Möglichkeit
+den Text zu bearbeiten. Lässt er dann den Prozess weiterlaufen wird ein
+Review Event mit der gleichen ID in Unicorn erzeugt. Das sorgt dann durch die
+zweite Query dafür, dass der neue Text in der Variable im ursprünglichen Proposal
+Prozess übernommen wird und der Case dort gerouted wird.
+
+
 ## Reflektion
 ### Posed Questions
 > * Wie nutzbar ist das Produkt?
