@@ -1,3 +1,4 @@
+
 # Event Driven Process Engine
 *Gruppe Processmaker*<br>
 *Lukas Rosentreter, Alexander Senger*
@@ -150,8 +151,7 @@ $criteriaCount->addGroupByColumn("UPPER(". OauthClientsPeer::CLIENT_NAME .")");
 hat das Problem, zumindest für unsere Zwecke, gelöst. Danach war es möglich neue OAuth Applications zu registrieren. 
 
 ####Unicorn
-Auch Unicorn stellte einige Schwierigkeiten dar, nicht zuletzt, da die Dokumentation sehr spärlich war. Die im `shared` Repository bereitstehende Docker-Installation lief auf OS X nicht durch. Lediglich der Kompilationsprozess, nicht jedoch das Deployment. Das neue Setup, dass eine Vorkompilierte Version von Unicorn in einen gemeinsamen Ordner (zwischen Docker und Host) legte, stellte sich später als Vorteil heraus, als das original GitHub Repository mit allem Quellcode verschwand. 
-
+Auch Unicorn stellte einige Schwierigkeiten dar, nicht zuletzt, da die Dokumentation sehr spärlich war. Die im `shared` Repository bereitstehende Docker-Installation lief auf OS X nicht durch. Lediglich der Kompilationsprozess, nicht jedoch das Deployment. Das neue Setup, dass eine Vorkompilierte Version von Unicorn in einen gemeinsamen Ordner (zwischen Docker und Host) legte, stellte sich später als Vorteil heraus, als das original GitHub Repository mit allem Quellcode verschwand.
 
 
 ## Architektur des ProcessMaker-Unicorn-Connectors
