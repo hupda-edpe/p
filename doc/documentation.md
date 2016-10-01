@@ -1,30 +1,15 @@
 
 # Event Driven Process Engine
-*Gruppe Processmaker*<br>
+**Gruppe Processmaker**<br>
 *Lukas Rosentreter, Alexander Senger*
 
 ## Inhalt
 
-<!--
-	[toc]
--->
+[toc]
+
 
 
 ## Kontext und Motivation
-> **Fragestellung**
->
-> * In welchen Bereich ordnet sich das Projekt ein? (Where?)
-> * Wer sind potenzielle Nutzer? (Who?)
-> * Wieso ist es überhaupt interessant sich damit zu beschäftigen? (Why?)
-
-&nbsp;
-
-> **TODO**
->
-> * Bild für Beispiel in "Process Execution"
-> * Sind die Fragen alle beantwortet? => Löschen!
-> * Beispiel für: "Warum ist es interessant sich damit zu beschäftigen?"
-
 ### Welche Bereiche sind betroffen?
 #### Complex Event Proccessing
 ...oder kurz *CEP*. Dabei wir ein Fluss an Daten beziehungsweise Ereignissen (Events) aus einer oder mehreren Quellen zusammengeführt und in Echtzeit analysiert. Echtzeit deswegen, weil genau das es von herkömmlicher Analyse der Daten, nach dem aggregieren, abgrenzt. <br>
@@ -52,10 +37,6 @@ BPM beschäftigt sich mit einzelnen Prozessen. CEP schafft es Zusammenhänge zwi
 
 
 ## Problemstellung
-> **Fragestellung**
->
-> * Welches Problem löst Ihr in Eurem Projekt? Hier bitte auch die zugeordnete Process-Engine mit einbauen, sprich das Problem für Eure Engine "instanziieren".
-
 Auf einfachster Ebene gesprochen, verbindet die entwickelte Software zwei Anwendungen. Auf der einen Seite eine CEP-Engine, auf der anderen eine BPM-Software. Beides sind Open-Source Projekte. Die CEP-Engine, Unicorn, entwickelt vom Hasso-Plattner-Institut in Potsdam wurde in Java geschrieben und läuft auf einem Apache Tomcat Server. ProcessMaker, entwickelt durch ProcessMaker Inc., ist hauptsächlich in PHP geschrieben. Ein Server für ProcessMaker ist nicht vorgegeben, doch Apache HTTP Server wird empfohlen und in der Dokumentation verwendet. Durch die Server Architektur bringen beide Komponenten REST-APIs mit sich, sodass eine Middleware die naheliegende Entscheidung war.
 
 Schon von der Terminologie her, bringen sowohl Complex Events als auch BPMN *Events* mit. In Unicorn können Queries erstellt werden, die auf eine Abfolge von eingehenden Events reagieren. Ein solches, aus mehreren Granulaten bestehendes, Event nennt man Komplexes Event. Die Daten der einzelnen Events und den Typ und die ID des Komplexen Events, können dann an einen vorbestimmten Ort (z.B. via REST-API) übergeben werden. Events in BPMN repräsentieren Dinge, die sich Ereignen, wie zum Beispiel, das Eingehen einer Bestellung. BPMN Events teilen sich in drei Typen auf: Start, Stopp und Intermediate. Events können dabei jeweils fangend (Catching) oder werfend (Throwing) sein. Darüber hinaus gibt es weitere Klassifizierungen, die aber hier keine weitere Rolle spielen sollen.
@@ -86,51 +67,10 @@ Entstanden ist dieser Plan vorwiegend aus den bereitgestellten Folien mit der Au
 Auffällig ist, dass in der Planung keine Entscheidungen beziehungsweise konkreten Aussagen zum Endgültigen Produkt sind (z.B. Middleware oder die Nutzung von APIs). Architektur und Scope wären zu Beginn sicherlich auch mit relativer Genauigkeit vorhersehbar gewesen, schien aber zweitrangig gegenüber dem vergleichsweise hohen Setup-Aufwand der beiden bestehenden Software Projekte. Erst nach erfolgreichem zum-laufen-bringen von Unicorn und ProcessMaker ging es um die effizienteste Variante, wie diese zu verknüpfen sind. <br>
 Diese Herangehensweise ist prototypisch für viele weitere Planungs-Entscheidungen des Projekts. So kamen weitere Wiki-Seiten dazu, die sowohl den theoretischen Ablauf für das Arbeiten mit Aktivitäten, als auch den API-spezifischen Ablauf dokumentierten. Je weiter das Projekt fortschritt, desto klarer wurde die Aufgabenteilung im Team und die eigentliche Planung und Dokumentation trat in den Hintergrund, sodass gegen Ende des Projektes durch direkte Kommunikation die anstehenden Aufgaben leicht abgearbeitet werden konnten.
 
-### Workflow
-Vorausgesetzt war die Arbeit mit GitHub und gegeben waren unterschiedliche Betriebssysteme im Team. Um möglichst viel Overhead zu vermeiden und flexibel zu bleiben, schienen Container eine sinnvolle Wahl für die Entwicklung. Aufgrund von Vorerfahrung wurde Docker beziehungsweise Docker-Compose als System ausgewählt. <br>
-Container erlauben unter anderem automatisiertes Setup und schnelles Neustarten der Systeme, was mehrere Vorteile gegenüber nativen Installationen oder Virtuellen Maschinen mit sich bringt. Native Installation von Unicorn und ProcessMaker auf mehreren verschiedenen Betriebssystemen bringt mehrfachen Aufwand mit sich, ist nicht wirklich sauber, was Kommunikation und Abtrennung untereinander anbelangt und bringt keine Sicherheit, dass alle Systeme gleich funktionieren. <br>Mit Virtuellen Maschinen zu arbeiten hätte sehr viel Voraussicht bedeutet, da das Setup einmalig am Anfang passieren muss, bevor die VM an alle Teammitglieder verteilt wird. Nachträgliche Änderungen und deren Nachverfolgung in einem nicht-lokalen Repository sind nicht praktikabel. <br>Containerisierung erlaubt kleine Konfigurationsdateien, ausgelagerten Code und garantiert identische Systeme über verschiedene Betriebssysteme hinweg. Nach einmaligem Setup können wenige, kleine Dateien über GitHub zur Verfügung gestellt werden und bei allen Teammitgliedern leicht installiert werden. Updates im Setup benötigen lediglich das austauschen dieser Dateien und das Neuinstallieren erfolgt via einzeiligem Befehl im Terminal. So sind auch tiefgreifende System-Änderungen mit Leichtigkeit in der Versionsverwaltung enthalten und nachvollziehbar.Der Quellcode wurde ebenso über GitHub verwaltet. Da Unicorn, in Java geschrieben, lediglich Kompiliert und Deployed werden musste, gab es hier keinen Bedarf für eine IDE. Trotz einiger schwerwiegenderer Änderungen in ProcessMaker, PHP, benötigte es auch hier keiner IDE, sodass jedes Teammitglied mit dem Editor ihrer Wahl arbeiten konnte.Die Kommunikation im Team erfolge von Anfang an informell wie Threema und gelegentlichen E-Mails. Persönliche Treffen fanden meist vor den Veranstaltungen statt, je nach Bedarf länger oder kürzer.
+### WorkflowVorausgesetzt war die Arbeit mit GitHub und gegeben waren unterschiedliche Betriebssysteme im Team. Um möglichst viel Overhead zu vermeiden und flexibel zu bleiben, schienen Container eine sinnvolle Wahl für die Entwicklung. Aufgrund von Vorerfahrung wurde Docker beziehungsweise Docker-Compose als System ausgewählt. <br>Container erlauben unter anderem automatisiertes Setup und schnelles Neustarten der Systeme, was mehrere Vorteile gegenüber nativen Installationen oder Virtuellen Maschinen mit sich bringt. Native Installation von Unicorn und ProcessMaker auf mehreren verschiedenen Betriebssystemen bringt mehrfachen Aufwand mit sich, ist nicht wirklich sauber, was Kommunikation und Abtrennung untereinander anbelangt und bringt keine Sicherheit, dass alle Systeme gleich funktionieren. <br>Mit Virtuellen Maschinen zu arbeiten hätte sehr viel Voraussicht bedeutet, da das Setup einmalig am Anfang passieren muss, bevor die VM an alle Teammitglieder verteilt wird. Nachträgliche Änderungen und deren Nachverfolgung in einem nicht-lokalen Repository sind nicht praktikabel. <br>Containerisierung erlaubt kleine Konfigurationsdateien, ausgelagerten Code und garantiert identische Systeme über verschiedene Betriebssysteme hinweg. Nach einmaligem Setup können wenige, kleine Dateien über GitHub zur Verfügung gestellt werden und bei allen Teammitgliedern leicht installiert werden. Updates im Setup benötigen lediglich das austauschen dieser Dateien und das Neuinstallieren erfolgt via einzeiligem Befehl im Terminal. So sind auch tiefgreifende System-Änderungen mit Leichtigkeit in der Versionsverwaltung enthalten und nachvollziehbar.Der Quellcode wurde ebenso über GitHub verwaltet. Da Unicorn, in Java geschrieben, lediglich Kompiliert und Deployed werden musste, gab es hier keinen Bedarf für eine IDE. Trotz einiger schwerwiegenderer Änderungen in ProcessMaker, PHP, benötigte es auch hier keiner IDE, sodass jedes Teammitglied mit dem Editor ihrer Wahl arbeiten konnte.Die Kommunikation im Team erfolge von Anfang an informell wie Threema und gelegentlichen E-Mails. Persönliche Treffen fanden meist vor den Veranstaltungen statt, je nach Bedarf länger oder kürzer.### SetupDie Container zu Beginn aufzusetzen war um einiges umständlicher als ursprünglich geplant, nicht zuletzt, da es eine weitere potentielle Fehlerquelle darstellt. In Kombination mit der nicht ausgereiften ProcessMaker Software, war nicht immer klar, ob der Fehler an der Container Konfiguration oder im Quellcode von ProcessMaker lag. <br>Das Setup von ProcessMaker ist mit Docker Compose keine Schwierigkeit per se. Die Voraussetzungen spezifizieren ein Linux-Apache-MySQL-PHP (LAMP) Stack. Um die Architektur möglichst flach, also im Sinne der Container, zu halten, werden Server und Datenbank aufgeteilt. Ein Image mit einer Linux Installation und Apache mit PHP ist so fertig verfügbar, genauso wie eine MySQL Installation. Via Docker Compose werden die beiden Container verknüpft. Zwar fehlen in den von ProcessMaker gelieferten Systemvoraussetzungen einige Apache Module und Abhängigkeiten, diese sind jedoch dank Stack Overflow, mit einiger Recherche herausgefunden und nachinstalliert. Ebenso stimmte die Angabe des MySQL Treibers nicht. (`mysqlnd` ist angegeben, `pdo` wird aber im Code tatsächlich verwendet.)Ein weiteres großes Problem mit Docker war, dass Docker bis vor einigen Monaten auf OS X anders funktionierte als auf Linux. Docker hat auf OS X eine virtuelle Debian Maschine via VirtualBox installiert, auf welcher die Container ausgeführt wurden. Unter Linux laufen diese direkt auf dem System. Normalerweise führt das selten zu Problemen, in unserem Fall aber waren die Zugriffsrechte auf Ordner zwischen Host (OS X) und Client (Debian via VirtualBox) relevant. (Der Code sollte dynamisch geladen werden, um den Container nicht bei jeder Änderung im Quellcode neu initialisieren zu müssen.) Da Docker aber nur Nutzer mit der `uid` `1000` auf dem Host lesen und schreiben lässt, Apache aber den Nutzer `www-data` braucht, war der Fix dem `www-data`-User die `uid` `1000` zu geben.Den Unicorn Container haben wir vorerst nicht selber aufgesetzt, sondern den im *Shared* Repository vorhandenen, verwendet. Da der Deployment-Prozess unter OS X, aus unbekannten Gründen, fehlschlug, die Kompilierung aber einwandfrei verlief, haben wir die beiden Abschnitte getrennt und eine neue Umgebung mit vorkompilierter `.war`-Datei aufgesetzt. Ein weiterer Vorteil davon war, dass bei einer Neuinstallation des Unicorn-Containers nicht der ganze Kompilationsprozess erneut durchlaufen werden musste, sondern lediglich die `.war`-Datei in einen Shared Folder eingebunden wurde.Somit existierten zwei separate Umgebungen für Unicorn und ProcessMaker die es nun galt zu verknüpfen.
 
 
-### Setup
->**Anmerkung**
->
-> Bereits die Diskussion der Schwierigkeiten im Setup-Prozess mit drinnen. Evtl. ausbaufähig, d.h. mehr Details.  
-
-Die Container zu Beginn aufzusetzen war um einiges umständlicher als ursprünglich geplant, nicht zuletzt, da es eine weitere potentielle Fehlerquelle darstellt. In Kombination mit der nicht ausgereiften ProcessMaker Software, war nicht immer klar, ob der Fehler an der Container Konfiguration oder im Quellcode von ProcessMaker lag. <br>
-Das Setup von ProcessMaker ist mit Docker Compose keine Schwierigkeit per se. Die Voraussetzungen spezifizieren ein Linux-Apache-MySQL-PHP (LAMP) Stack. Um die Architektur möglichst flach, also im Sinne der Container, zu halten, werden Server und Datenbank aufgeteilt. Ein Image mit einer Linux Installation und Apache mit PHP ist so fertig verfügbar, genauso wie eine MySQL Installation. Via Docker Compose werden die beiden Container verknüpft. Zwar fehlen in den von ProcessMaker gelieferten Systemvoraussetzungen einige Apache Module und Abhängigkeiten, diese sind jedoch dank Stack Overflow, mit einiger Recherche herausgefunden und nachinstalliert. Ebenso stimmte die Angabe des MySQL Treibers nicht. (`mysqlnd` ist angegeben, `pdo` wird aber im Code tatsächlich verwendet.)Ein weiteres großes Problem mit Docker war, dass Docker bis vor einigen Monaten auf OS X anders funktionierte als auf Linux. Docker hat auf OS X eine virtuelle Debian Maschine via VirtualBox installiert, auf welcher die Container ausgeführt wurden. Unter Linux laufen diese direkt auf dem System. Normalerweise führt das selten zu Problemen, in unserem Fall aber waren die Zugriffsrechte auf Ordner zwischen Host (OS X) und Client (Debian via VirtualBox) relevant. (Der Code sollte dynamisch geladen werden, um den Container nicht bei jeder Änderung im Quellcode neu initialisieren zu müssen.) Da Docker aber nur Nutzer mit der `uid` `1000` auf dem Host lesen und schreiben lässt, Apache aber den Nutzer `www-data` braucht, war der Fix dem  `www-data`-User die `uid` `1000` zu geben.Den Unicorn Container haben wir vorerst nicht selber aufgesetzt, sondern den im *Shared* Repository vorhandenen, verwendet. Da der Deployment-Prozess unter OS X, aus unbekannten Gründen, fehlschlug, die Kompilierung aber einwandfrei verlief, haben wir die beiden Abschnitte getrennt und eine neue Umgebung mit vorkompilierter `.war`-Datei aufgesetzt. Ein weiterer Vorteil davon war, dass bei einer Neuinstallation des Unicorn-Containers nicht der ganze Kompilationsprozess erneut durchlaufen werden musste, sondern lediglich die `.war`-Datei in einen Shared Folder eingebunden wurde.
-
-Somit existierten zwei separate Umgebungen für Unicorn und ProcessMaker die es nun galt zu verknüpfen.
-
-
-### Kommunikation mit ProcessMaker
-
-#### BPMN in ProcessMaker
-Unicorn modelliert EventTypes und Events praktischerweise bereits mit BPMN. Die Prozesse, einschließlich Tasks und Events in ProcessMaker sind sowieso mit BPMN modelliert.
-Es lag daher nahe, EventTypen zu modellieren, die für den Austausch zwischen Unicorn und PM gedacht sind. BPMN sieht Erweiterung dieser Art bereits vor und bietet spezifikationskonforme Lösungen an. Es war zudem ein Bestreben diese BPMN Erweiterungen zwischen den drei Projektgruppen auszutauschen, so dass eine Interkompatiblität entsteht.
-Der Versuche eigene BPMN Erweiterungen in ProcessMaker einzuspeisen schlug allerdings fehl. Tatsächlich war es nicht einmal möglich standardkonforme Modelle zu importieren, lediglich eigens aus ProcessMaker exportierte Prozesse ließen sich wieder importieren.
-
-#### Events
-Nachdem dieser erste Ansatz keine Früchte trug, stellte sich dennoch die Frage, mittels ProcessMaker Events die Kommunikation mit Unicorn zu steuern. Auch hier wurden wir enttäuscht, da es nicht einmal gelang Events aus zwei verschiedenen Prozessen innerhalb von ProcessMaker zu verbinden. Events in ProcessMaker sind darüber hinaus auch nicht an die API angebunden.
-Da Events auch seitens ProcessMaker über einen Pull-Mechanismus implementiert waren, den man eigenständig von außen z.B. mit einem Cronjob auslösen musste, wäre man möglicherweise über diesen Ansatz zu einer Lösung gekommen. Da die Online Dokumentation aber nicht viele Informationen über die Funktionsweise des Mechanismus hergab schien auch dieser Weg nicht sehr Zielführend. Trial und Error und Reverse Engineering wären die besten Werkzeuge gewesen, welche nicht sonderlich effektiv schienen, nicht zuletzt da zu diesem Zeitpunkt bereits mehrere Fehler im Quellcode der Software aufgetaucht waren. Zeitrahmen und Arbeitsumfang ließen sich nicht abschätzen. Daher haben wir uns für die vielversprechendere Lösung über Tasks entschieden.
-
-#### Tasks
-Tasks ist die Bezeichnung die ProcessMaker für BPMN Aktivitäten nutzt. Sie stellen zu erledigende Aufgaben dar und sind daher semantisch nicht ganz akutat auf Komplexe Events abzubilden. Sie sind in ProcessMaker konkreten Nutzern oder Nutzergruppen des Systems zugeordnet und müssen entland des Prozessablaufs gerouted werden. Sowohl das Abarbeiten als auch das routen sind via REST-API verfügbar. Diese ist online durchweg gut dokumentiert und die Vermutung, dass die ProcessMaker eigene Weboberfläche selber über diese API mit der Execution Engine kommuniziert, ist sogar naheliegend. Obwohl dies nicht der syntaktisch korrekte Ansatz ist, schien er der einzige der im Rahmen des Projektes als realistisch umsetzbar einzustufen war.
-
-### Prototyp für ProcessMaker
-Da der generelle Ansatz zur Kommunikation mit ProcessMaker bereits eine Hürde war, haben wir uns dazu entschieden zunächst einen Prototyp zu implementieren, um damit die Möglichkeiten der API zu testen und einen Proof-of-Concept zu haben. Desweiteren diente dies auch dazu, unseren Zwischenstand und das bis dahin gesammelte Wissen über unsere spezifische Process Execution Engine den anderen Gruppen vorzustellen und zu demonstrieren.
-
-Um flexibel und interaktiv zu sein haben wir als Programmiersprache für den Prototyp `Python` gewählt. Da alle Teammitglieder die gleiche Version lokal hatten, schien es kein Problem, den Prototypen vorerst lokal zu verwenden. `Python` stellte sich als eine gute Wahl heraus, da wir so zügig zu einem funktionierenden Ergebnis kamen. Mit der `requests` Bibliothek ließ sich unkompliziert mit der API von ProcessMaker kommunizieren. Außerdem haben wir damit einen guten Grundstein für die eigentliche Middleware, die das Ziel des Projektes war, gelegt.
-
-### Django Middleware
-Bis zu diesem Zeitpunkt war lediglich die Seite in Richtung ProcessMaker abgedeckt.
-Da man beim Registrieren von EventQueries in Unicorn einen HTTP Endpoint als Callback angeben musste, war klar, dass wir irgendeine Form von HTTP Server anbieten mussten.
-Wir wollten Teile vom Prototyp wiederverwenden und uns nicht damit aufhalten, ein Callback-Interface für Unicorn selber zu implementieren, also haben wir uns dafür entschieden einen Django-Server aufzusetzen.
-Das hatte außerdem den Vorteil, dass man die Middleware selber leicht über eine Weboberfläche bedienen konnte.
-
-### Schwierigkeiten
-#### ProcessMaker
-Im Verlaufe des Projekts kam es immer wieder zu Verzögerungen, meist durch Fehler in der Community Version von ProcessMaker. Abgesehen von den fehlenden Abhängigkeiten während des Setups, schienen einige MySQL-Operationen nicht getestet worden sein. <br>
-Nach erfolgeicher Installation von ProcessMaker, wird man als Admin durch ein paar Konfigurations-Schritte geleitet, die zwar funktionierten, aber nicht persistent waren. Bei der Initalisierung beim ersten Start wurde eine Tabelle nicht in die Datenbank geschrieben, weil die zuständige Query fehlschlug. Das Datumsformat war als `0000-00-00 00:00:00` eingetragen, obwohl die Datenbank `NULL` erwartet hat. Die zuständige Datei `project_root/processmaker/rbac/engine/data/mysql/insert.sql` sah wie folgt aus.
+### Kommunikation mit ProcessMaker#### BPMN in ProcessMakerUnicorn modelliert EventTypes und Events praktischerweise bereits mit BPMN. Die Prozesse, einschließlich Tasks und Events in ProcessMaker sind sowieso mit BPMN modelliert.Es lag daher nahe, EventTypen zu modellieren, die für den Austausch zwischen Unicorn und PM gedacht sind. BPMN sieht Erweiterung dieser Art bereits vor und bietet spezifikationskonforme Lösungen an. Es war zudem ein Bestreben diese BPMN Erweiterungen zwischen den drei Projektgruppen auszutauschen, so dass eine Interkompatiblität entsteht.Der Versuche eigene BPMN Erweiterungen in ProcessMaker einzuspeisen schlug allerdings fehl. Tatsächlich war es nicht einmal möglich standardkonforme Modelle zu importieren, lediglich eigens aus ProcessMaker exportierte Prozesse ließen sich wieder importieren.#### EventsNachdem dieser erste Ansatz keine Früchte trug, stellte sich dennoch die Frage, mittels ProcessMaker Events die Kommunikation mit Unicorn zu steuern. Auch hier wurden wir enttäuscht, da es nicht einmal gelang Events aus zwei verschiedenen Prozessen innerhalb von ProcessMaker zu verbinden. Events in ProcessMaker sind darüber hinaus auch nicht an die API angebunden.Da Events auch seitens ProcessMaker über einen Pull-Mechanismus implementiert waren, den man eigenständig von außen z.B. mit einem Cronjob auslösen musste, wäre man möglicherweise über diesen Ansatz zu einer Lösung gekommen. Da die Online Dokumentation aber nicht viele Informationen über die Funktionsweise des Mechanismus hergab schien auch dieser Weg nicht sehr Zielführend. Trial und Error und Reverse Engineering wären die besten Werkzeuge gewesen, welche nicht sonderlich effektiv schienen, nicht zuletzt da zu diesem Zeitpunkt bereits mehrere Fehler im Quellcode der Software aufgetaucht waren. Zeitrahmen und Arbeitsumfang ließen sich nicht abschätzen. Daher haben wir uns für die vielversprechendere Lösung über Tasks entschieden.Das neue Ziel war weiterhin Komplexe Events von Unicorn an ProcessMaker und zurück zu senden, in ProcessMaker aber Aktivitäten zu nutzen um das Verhalten von Events nach außen zu simulieren. #### TasksTasks ist die Bezeichnung die ProcessMaker für BPMN Aktivitäten nutzt. Sie stellen zu erledigende Aufgaben dar und sind daher semantisch nicht ganz akkurat auf Komplexe Events abzubilden. Sie sind in ProcessMaker konkreten Nutzern oder Nutzergruppen des Systems zugeordnet und müssen entlang des Prozessablaufs geroutet werden. Sowohl das Abarbeiten als auch das routen sind via REST-API verfügbar. Diese ist online durchweg gut dokumentiert und die Vermutung, dass die ProcessMaker eigene Weboberfläche selber über diese API mit der Execution Engine kommuniziert, ist sogar naheliegend. Obwohl dies nicht der syntaktisch korrekte Ansatz ist, schien er der einzige der im Rahmen des Projektes als realistisch umsetzbar einzustufen war.Eingehende Events lassen sich von der Middleware auffangen, an den Aktivitäten Endpoint pushen und von der Middleware automatisch weiter routen. Werfende Events zu simulieren ist nicht ohne weiteres möglich, nicht zuletzt, weil die API keine Callbacks ermöglicht. Aber eine geroutete Aktivität landet in der Inbox des zuständigen Nutzers und diese ist wiederum per API abzufragen. Somit polled die Middleware - ähnlich der Cronjobs - die Inbox eines designierten Unicorn-Nutzers und pushed gegebenenfalls ein Event in den Datenfluss von Unicron.### Prototyp für ProcessMakerDa der generelle Ansatz zur Kommunikation mit ProcessMaker bereits eine Hürde war, haben wir uns dazu entschieden zunächst einen Prototyp zu implementieren, um damit die Möglichkeiten der API zu testen und einen Proof-of-Concept zu haben. Des Weiteren diente dies auch dazu, unseren Zwischenstand und das bis dahin gesammelte Wissen über unsere spezifische Process Execution Engine den anderen Gruppen vorzustellen und zu demonstrieren.Um flexibel und interaktiv zu sein haben wir als Programmiersprache für den Prototyp `Python` gewählt. Da alle Teammitglieder die gleiche Version lokal hatten, schien es kein Problem, den Prototypen vorerst lokal zu verwenden. `Python` stellte sich als eine gute Wahl heraus, da wir so zügig zu einem funktionierenden Ergebnis kamen. Mit der `requests` Bibliothek ließ sich unkompliziert mit der API von ProcessMaker kommunizieren. Außerdem haben wir damit einen guten Grundstein für die eigentliche Middleware, die das Ziel des Projektes war, gelegt.### Django MiddlewareBis zu diesem Zeitpunkt war lediglich die Seite in Richtung ProcessMaker abgedeckt.Da man beim Registrieren von EventQueries in Unicorn einen HTTP Endpoint als Callback angeben musste, war klar, dass wir irgendeine Form von HTTP Server anbieten mussten.Wir wollten Teile vom Prototyp wiederverwenden und uns nicht damit aufhalten, ein Callback-Interface für Unicorn selber zu implementieren, also haben wir uns dafür entschieden einen Django-Server aufzusetzen.Das hatte außerdem den Vorteil, dass man die Middleware selber leicht über eine Weboberfläche bedienen konnte.### Schwierigkeiten#### ProcessMakerIm Verlaufe des Projekts kam es immer wieder zu Verzögerungen, meist durch Fehler in der Community Version von ProcessMaker. Abgesehen von den fehlenden Abhängigkeiten während des Setups, schienen einige MySQL-Operationen nicht getestet worden sein. <br>Nach erfolgreicher Installation von ProcessMaker, wird man als Admin durch ein paar Konfigurations-Schritte geleitet, die zwar funktionierten, aber nicht persistent waren. Bei der Initialisierung beim ersten Start wurde eine Tabelle nicht in die Datenbank geschrieben, weil die zuständige Query fehlschlug. Das Datumsformat war als `0000-00-00 00:00:00` eingetragen, obwohl die Datenbank `NULL` erwartet hat. Die zuständige Datei `project_root/processmaker/rbac/engine/data/mysql/insert.sql` sah wie folgt aus.
 
 ```sql
 ('00000000000000000000000000000006','PM_ALLCASES','2008-04-30 00:00:00',
@@ -142,7 +82,7 @@ Nach erfolgeicher Installation von ProcessMaker, wird man als Admin durch ein pa
 	'0000-00-00 00:00:00',1,'00000000000000000000000000000002'),
 # ...
 ```
-Gändert sah die datei folgendermaßen aus.
+Gändert sah die Datei folgendermaßen aus.
 
 ```sql
 ('00000000000000000000000000000006','PM_ALLCASES','2008-04-30 00:00:00',
@@ -155,8 +95,7 @@ Gändert sah die datei folgendermaßen aus.
 # ...
 ```
 
-Ein weiterer Fehler war die Query, die für die Registrierung von OAuth Apps zuständig war. Das besondere hierbei war, dass auch keine Fehlermeldung angezeigt wurde. Lediglich durch abfangen des AJAX Returns in der Console, ließ sich feststellen, dass es sich um ein Invalides MySQL Statement handelte. Dem dynamisch in PHP zusammengesetzte Query fehlte eine `GROUP` Column. Die Funktion
-
+Ein weiterer Fehler war die Query, die für die Registrierung von OAuth Apps zuständig war. Das besondere hierbei war, dass auch keine Fehlermeldung angezeigt wurde. Lediglich durch abfangen des AJAX Returns in der Konsole, ließ sich feststellen, dass es sich um ein Invalides MySQL Statement handelte. Dem dynamisch in PHP zusammengesetzte Query fehlte eine `GROUP` Column. Die Funktion
 ```php
 public function getAll($arrayFilterData = array(), $sortField = "",
 	$sortDir = "", $start = 0, $limit = 25) {
@@ -171,73 +110,10 @@ Hinzufügen der Zeile
 $criteriaCount->addGroupByColumn("UPPER(". OauthClientsPeer::CLIENT_NAME .")");
 ```
 
-hat das Problem, zumindest für unsere Zwecke, gelöst. Danach war es möglich neue OAuth Applications zu registrieren.
-
-####Unicorn
-Auch Unicorn stellte einige Schwierigkeiten dar, nicht zuletzt, da die Dokumentation sehr spärlich war. Die im `shared` Repository bereitstehende Docker-Installation lief auf OS X nicht durch. Lediglich der Kompilationsprozess, nicht jedoch das Deployment. Das neue Setup, dass eine Vorkompilierte Version von Unicorn in einen gemeinsamen Ordner (zwischen Docker und Host) legte, stellte sich später als Vorteil heraus, als das original GitHub Repository mit allem Quellcode verschwand.
+hat das Problem, zumindest für unsere Zwecke, gelöst. Danach war es möglich neue OAuth Applications zu registrieren.####UnicornAuch Unicorn stellte einige Schwierigkeiten dar, nicht zuletzt, da die Dokumentation sehr spärlich war. Die im `shared` Repository bereitstehende Docker-Installation lief auf OS X nicht durch. Lediglich der Kompilationsprozess, nicht jedoch das Deployment. Das neue Setup, dass eine Vorkompilierte Version von Unicorn in einen gemeinsamen Ordner (zwischen Docker und Host) legte, stellte sich später als Vorteil heraus, als das Original GitHub Repository mit allem Quellcode verschwand.
 
 
-## Architektur der Middleware
-
-Die von uns implementierte Middleware ist ein mit Django aufgesetzter
-Webserver, der die jeweiligen REST-APIs miteinander verbindet.
-
-### OAuth
-Um auf die API von ProcessMaker zugreifen zu können, muss sich eine Anwendung
-erst von einem User registrieren lassen und erhält so eine Client ID und Secret.
-Als dieser User ist dann die Middleware nach erfolgreicher Authentifizierung eingeloggt.
-Es empfiehlt sich daher einen dezidierten User für diesen Zweck anzulegen, im Folgenden *Unicorn User*,
-dessen Login-Daten in *unicorn_config.py* eingetragen werden müssen.
-Mit den Login-Daten und o.g. Client ID und Secret lässt sich dann
-ein Token von ProcessMaker generieren lassen, mit dem sich
-die Anwendung bei HTTP Requests authentifizieren kann.
-Diese Funktionalität ist im Pythonmodul *pm_auth.py* implementiert. Das Token
-wird dabei lokal gespeichert und falls nötig aktualisiert oder neu generiert.
-
-Für Unicorn waren keine Maßnahmen zur Authentifizierung nötig.
-
-### APIs
-Die API von ProcessMaker gliedert sich in drei Bereiche:
-> * Administration
-> * Designer
-> * Cases
-
-Ersterer dient dazu User, Gruppen, Rollen und Systemeinstellungen von ProcessMaker
-zu verwalten. Dieser Aspekt wird von unserer Middleware nicht benutzt.
-Der Bereich Designer stellt Endpunkte bereit mit denen man Prozessmodelle
-verwalten und bearbeiten kann.
-Im Prototyp haben wir Teile davon verwendet, um die Tasks aufzulisten, mit denen
-man einen neuen Prozessablauf starten kann.
-Diese Funktionalität wird so nicht mehr benötigt, allerdings brauchen wir dafür
-die Möglichkeit die Beschreibung von einem modellierten Task auszulesen, was
-sich über diesen Bereich der API realisieren lässt.
-Der letzte Bereich, Cases, ist der wohl wichtigste für unsere Anwendung.
-Hier sind alle Endpunkte veranlagt mit denen man Prozessabläufe steuern kann
-und Prozessvariablen ein- und auslesen kann.
-Im Modul *pm_wrapper.py* sind die von uns benötigten Endpunkte gekapselt.
-
-Die API von Unicorn ist etwas simpler zu bedienen.
-Es lassen sich bequem Events posten, EventTypes und EventQueries erstellen,
-bearbeiten und löschen und für letztere eine Callback URL angeben.
-Implementiert ist die Schnittstelle im Modul *unicorn_wrapper.py*.
-
-Für ProcessMaker gibt es im dazugehörigen Wiki eine extensive Dokumentation
-der Endpunkte, wohingegen wir für Unicorn nichts vergleichbares finden konnten.
-Glücklicherweise sind in den Unit-Test von Unicorn Beispiele, die die
-Bedienung der API hinreichend erklären.
-
-
-### Konfiguration von ProcessMaker
-
-In einem Prozessmodell müssen diejenigen Tasks, die als Schnittstelle zu Unicorn dienen,
-dem Unicorn User zugewiesen werden damit sie in dessen Inbox erscheinen.
-Ist ein solcher Task in einem Prozessablauf erreicht, kann die Middleware beim Pullen der offenen Cases
-somit feststellen, ob ein neues Event erzeugt werden soll.
-
-Damit ein Mapping zwischen den Tasks und EventTypes möglich ist und die Middleware weiß, wie sie mit dem Case umgehen soll,
-ist es nötig Informationen bereits im Modell an des Task zu hängen. Dafür dient uns das Description-Feld von den Tasks,
-welches wir über die Designer-API auslesen können.
-Erwartet wird von unserer Anwendung, dass sich dort ein JSON befindet, das beispielsweise so aussehen könnte:
+## Architektur der MiddlewareDie von uns implementierte Middleware ist ein mit Django aufgesetzterWebserver, der die jeweiligen REST-APIs miteinander verbindet.### OAuthUm auf die API von ProcessMaker zugreifen zu können, muss sich eine Anwendungerst von einem User registrieren lassen und erhält so eine Client ID und Secret.Als dieser User ist dann die Middleware nach erfolgreicher Authentifizierung eingeloggt.Es empfiehlt sich daher einen dezidierten User für diesen Zweck anzulegen, im Folgenden *Unicorn User*,dessen Login-Daten in *unicorn_config.py* eingetragen werden müssen.Mit den Login-Daten und o.g. Client ID und Secret lässt sich dannein Token von ProcessMaker generieren lassen, mit dem sichdie Anwendung bei HTTP Requests authentifizieren kann.Diese Funktionalität ist im Pythonmodul *pm_auth.py* implementiert. Das Tokenwird dabei lokal gespeichert und falls nötig aktualisiert oder neu generiert.Für Unicorn waren keine Maßnahmen zur Authentifizierung nötig.### APIsDie API von ProcessMaker gliedert sich in drei Bereiche:> * Administration> * Designer> * CasesErsterer dient dazu User, Gruppen, Rollen und Systemeinstellungen von ProcessMakerzu verwalten. Dieser Aspekt wird von unserer Middleware nicht benutzt.Der Bereich Designer stellt Endpunkte bereit mit denen man Prozessmodelleverwalten und bearbeiten kann.Im Prototyp haben wir Teile davon verwendet, um die Tasks aufzulisten, mit denenman einen neuen Prozessablauf starten kann.Diese Funktionalität wird so nicht mehr benötigt, allerdings brauchen wir dafürdie Möglichkeit die Beschreibung von einem modellierten Task auszulesen, wassich über diesen Bereich der API realisieren lässt.Der letzte Bereich, Cases, ist der wohl wichtigste für unsere Anwendung.Hier sind alle Endpunkte veranlagt mit denen man Prozessabläufe steuern kannund Prozessvariablen ein- und auslesen kann.Im Modul *pm_wrapper.py* sind die von uns benötigten Endpunkte gekapselt.Die API von Unicorn ist etwas simpler zu bedienen.Es lassen sich bequem Events posten, EventTypes und EventQueries erstellen,bearbeiten und löschen und für letztere eine Callback URL angeben.Implementiert ist die Schnittstelle im Modul *unicorn_wrapper.py*.Für ProcessMaker gibt es im dazugehörigen Wiki eine extensive Dokumentationder Endpunkte, wohingegen wir für Unicorn nichts Vergleichbares finden konnten.Glücklicherweise sind in den Unit-Test von Unicorn Beispiele, die dieBedienung der API hinreichend erklären.### Konfiguration von ProcessMakerIn einem Prozessmodell müssen diejenigen Tasks, die als Schnittstelle zu Unicorn dienen,dem Unicorn User zugewiesen werden damit sie in dessen Inbox erscheinen.Ist ein solcher Task in einem Prozessablauf erreicht, kann die Middleware beim Pullen der offenen Cases somit feststellen, ob ein neues Event erzeugt werden soll.Damit ein Mapping zwischen den Tasks und EventTypes möglich ist und die Middleware weiß, wie sie mit dem Case umgehen soll, ist es nötig Informationen bereits im Modell an den Task zu hängen. Dafür dient uns das Description-Feld von den Tasks, welches wir über die Designer-API auslesen können. Erwartet wird von unserer Anwendung, dass sich dort ein JSON befindet, das beispielsweise so aussehen könnte:
 
 ```json
 {
@@ -266,7 +142,6 @@ Dafür haben wir Cases selber als Klasse modelliert um deren Status festzuhalten
 
 
 ### Konfiguration von Unicorn
-
 Damit die Kommunikation klappt, müssen zunächst *EventTypes* und *EventQueries*
 erstellt werden. Um bei Queries eine Callback URL anzugeben, muss man diese
 über die REST API von Unicorn erstellen und da wir sowieso ein Webserver als
@@ -296,68 +171,4 @@ gestartet.
 Unabhängig davon werden die restlichen Werte aus dem Ergebnis als Variablen
 an den existierenden oder/und an den neu erzeugten Case weitergegeben.
 
-## Reflektion
-### Posed Questions
-> * Wie nutzbar ist das Produkt?
-> * Was müsste getan werden, um es "richtig nutzbar" zu machen?
-> * Was würde man wohl als nächstes verbessern/erweitern?
-> * Wie viel der Lösung ist spezifisch für Eure Engine?
-
-### Wie nutzbar ist das Produkt?
-* Ok. Könnte ausgereifter sein. (Django + Weboberfläche vielleicht keine optimale Lösung)
-* Solider 1. Prototyp.
-
-### Verbesserungsvorschläge (zur Nutzbarkeit)
-* Würde so nicht in Produktion genommen werden.
-* Nicht zuletzt wegen APIs bräuchte man mehr Sicherheit.
-* Ebenso müsste mehr Automatisiert werden.
-* Die Middleware ist auch nicht auf evtl. große Datendurchsätze getestet. (ProcessMaker auch nicht.) Evtl. müsste die Middleware sogar als Buffer wirken.
-* Config zusammenführen. Bisher wird an vielen verschiedenen Stellen immer wieder das gleiche eingefügt. Hierzu eine einheitliche Konfigurationsdatei im root Verzeichnis schafft ein einheitlicheres feel eines SW-Produktes.
-
-### Engine-Spezifisches
-Durch den implementieren REST basieren Wrapper für ProcessMaker, ließe sich, mit vergleichsweise geringem Aufwand, jede andere REST fähige Software anbinden. Dann allerdings ebenso via Tasks und nicht Events. Je nach eingesetzter Engine, der Mächtigkeit der dort implementieren Events und deren Erreichbarkeit via API, varriert der Aufwand sehr stark.
-
-
-> **Aus "Schwierigkeiten"**
->
-> * External Circumstances
-	* No severe issues.
-	* Good communication => Lightweight and instant
-	* Few resources timewise
-		* Absence from inter-team meeting
-			* turned out not to be too bad. The Teams didn't intersect too much
-		* In the beginning we could sometimes only manage to have 1 team member present.
-
-
-
-
-## Dokumentierter Code
-
-### Readme
-### Howto
-```sh
-cd processmaker
-docker-compose up --build
-
-cd ../unicorn
-docker-compose up --build
-
-cd ../connector
-docker-compose up --build
-
-```
-### Manual
-
-# Bullshit und Anhang
-| | ![Unicorn Logo](img/unicorn.png) | EDPE | ![ProcessMaker Logo](img/pm.png) |
-| :--- | --- | --- | --- |
-| Engine | Esper | Django | Zend |
-| Language | Java | Python | PHP |
-| LOC | N.a.N. | ~500 | > 10000 |
-
-***
-
-Aus "Problembeschreibung"
-### Diesen Absatz würde ich aus Problemstellung nehmen und wo anders einordnen, ggf. inhaltlich auseinanderziehen
-
-Das neue Ziel war weiterhin Komplexe Events von Unicorn an ProcessMaker und zurück zu senden, in ProcessMaker aber Aktivitäten zu nutzen um das Verhalten von Events nach außen zu simulieren. Eingehende Events lassen sich von der Middleware auffangen, an den Aktivitäten Endpoint pushen und von der Middleware automatisch weiter routen. Werfende Events zu simulieren ist nicht ohne weiteres möglich, nicht zuletzt, weil die API keine Callbacks ermöglicht. Aber eine geroutete Aktivität landet in der Inbox des zuständigen Nutzers und diese ist wiederum per API abzufragen. Somit polled die Middleware die Inbox eines designierten Unicorn-Nutzers und pushed gegebenenfalls ein Event in den Datenfluss von Unicron.
+## Reflektion### NutzbarkeitDie Middleware stellt mit Sicherheit einen validen Prototyp dar. Sie zeigt, dass die Kommunikation zwischen beiden Engines funktioniert, erfordert dabei aber sicherlich noch zu viel menschliche Interaktion. Ein wirklicher Einsatz in einer Produktivumgebung beim jetzigen Stand ist kaum vorstellbar. Durch das einfache Setup via Docker Compose stellt die Middleware, so wie sie momentan ist, eventuell einen guten Testkandidaten dar. Das heißt, sollte jemand in Erwägung ziehen Event-Driven Process Management einzusetzen, scheint unser Projekt ein valider Einstiegspunkt. ### Schwächen und PotentialBis die Software in Produktion genommen werden könnte, gibt es einige Features die noch implementiert, beziehungsweise Architekturentscheidungen, die getroffen werden müssten. Der ganze Themenkomplex Sicherheit, hat bei der Entwicklung bisher keine Rolle gespielt. So sind die meisten Passwörter im Klartext in der Konfiguration bzw. im Code und der Einfachheit halber sehr einfach gewählt. (`123456` in der Regel.) Zudem gibt es Sicherheitsschwachpunkte bei den Gemeinsamen Ordnern und den Lese- und Schreibberechtigungen. Ebenso ist der Großteil unseres Projekts auf basierend auf Kommunikation zwischen APIs und Containern. Beide haben sehr großes Potential in verteilten Umgebungen eingesetzt zu werden. Zusätzlich zur Netzwerk-Sicherheit fehlt hier ein kompletter Authentifizierungs-Mechanismus in der Middleware und jegliche Anforderungen an Verlässlichkeit und Stabilität.Ebenso sollte beim der Diskussion der Einsatzgebiete Effizienz eine Rolle spielen. Python ist bekanntlich keine gut skalierende Sprache, CEP arbeitet aber mit sehr hohem Datenaufkommen. Zwar können Container etwas entgegenwirken, dennoch sollte eine stichhaltige Aussage zu Performance getroffen werden können, bevor die Software in Produktion geht. ProcessMaker selber wurde auch nicht auf hohe Datenaufkommen getestet, sodass die Middleware im Zweifelsfall sogar als Puffer wirken müsste. Die nötige Funktionalität dafür ist bisher aus noch nicht vorhanden und im Zweifelsfalls nochmal ein eigenes Projekt in sich.Nicht zuletzt um effizienter zu arbeiten, aber auch um Dopplungen in Code zu vermeiden, ist auch die Entscheidung ein Add-On statt einer Middleware zu bauen eine Überlegung wert. Die API von ProcessMaker zu erweitern und Endpunkte für Events, sowie Callbacks zu implementieren, um direkt mit Unicorn kommunizieren zu können, sollte zwar nicht einfacher, aber sicherlich auch ein legitimer weg zu Event-Driven Process Management sein. Vorteil der Middleware hingegen ist ein gewisses Maß an Flexibilität. Da die Software auf beiden Seiten mit Fassaden (Wrappern) arbeitet, ist es mit relativer Leichtigkeit möglich, eine der beiden Engines auszutauschen. Voraussetzung dafür ist, dass die austauschende Engine eine REST-API bietet. Wie umfangreich der Rück-Umstieg von Aktivitäten auf Events ist, hängt dabei viel von der gegebenen API ab. Sicherlich müssen die Abläufe innerhalb der Middleware geändert werden (denn das Routen fällt mit großer Wahrscheinlichkeit weg) aber die Zuordnungsfunktion von Komplexem Event zu Event in Instanziiertem Prozess bleibt erhalten.Das Level an Interaktion, welches zur Kommunikation zwischen den beiden Engins nötig ist, müsste sicherlich auch Automatisiert werden. Denkbar ist, viel mehr Konfiguration in die Prozessmodellierung zu schieben, sodass bereits beim Anlegen des Projekts in ProcessMaker definiert wird, was beim erhalten eines Komplexen Events passieren soll.Letztlich liegt noch Optimierungspotential in den Konfigurationsdateien. Zur gemeinsamen Kommunikation müssen die beiden Engines vieles voneinander wissen und bisher ist dieses Wissen an mehreren Stellen gleichzeitig abgelegt. Zusammenführung der Konfigurationsdateien und ein Automatisiertes Setup dieser scheint sinnvoll und gibt ein einheitlicheres Software Produkt. ### AblaufIm Verlauf des Projekts gab es im Team keine größeren Beeinträchtigungen. Der Anfang war, wie erwartet und üblich, etwas langsam, da sich alle Teammitglieder einfinden mussten und zwischenzeitlich gab es kleiner zeitliche Schwierigkeiten, aber die Kommunikation und Absprache hat in neunundneunzig Prozent der Fälle hervorragend funktioniert. 
