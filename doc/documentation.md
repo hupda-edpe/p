@@ -177,10 +177,19 @@ hat das Problem, zumindest für unsere Zwecke, gelöst. Danach war es möglich n
 Auch Unicorn stellte einige Schwierigkeiten dar, nicht zuletzt, da die Dokumentation sehr spärlich war. Die im `shared` Repository bereitstehende Docker-Installation lief auf OS X nicht durch. Lediglich der Kompilationsprozess, nicht jedoch das Deployment. Das neue Setup, dass eine Vorkompilierte Version von Unicorn in einen gemeinsamen Ordner (zwischen Docker und Host) legte, stellte sich später als Vorteil heraus, als das original GitHub Repository mit allem Quellcode verschwand.
 
 
+
+
 ## Architektur der Middleware
 
 Die von uns implementierte Middleware ist ein mit Django aufgesetzter
 Webserver, der die jeweiligen REST-APIs miteinander verbindet.
+
+### Initiales Setup
+
+Im Verzeichnis `connector/pmucon/config` befinden sich drei Beispiel-
+Konfigurationsdateien die an die lokale Umgebung angepasst werden müssen.
+Es sind dann lediglich die drei Container mit dem Befehl `docker-compose up --build`
+zu kompilieren und starten.
 
 ### OAuth
 Um auf die API von ProcessMaker zugreifen zu können, muss sich eine Anwendung
@@ -393,23 +402,6 @@ Durch den implementieren REST basieren Wrapper für ProcessMaker, ließe sich, m
 
 
 
-
-## Dokumentierter Code
-
-### Readme
-### Howto
-```sh
-cd processmaker
-docker-compose up --build
-
-cd ../unicorn
-docker-compose up --build
-
-cd ../connector
-docker-compose up --build
-
-```
-### Manual
 
 # Bullshit und Anhang
 | | ![Unicorn Logo](img/unicorn.png) | EDPE | ![ProcessMaker Logo](img/pm.png) |
