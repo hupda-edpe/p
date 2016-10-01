@@ -114,7 +114,74 @@ hat das Problem, zumindest für unsere Zwecke, gelöst. Danach war es möglich n
 ####UnicornAuch Unicorn stellte einige Schwierigkeiten dar, nicht zuletzt, da die Dokumentation sehr spärlich war. Die im `shared` Repository bereitstehende Docker-Installation lief auf OS X nicht durch. Lediglich der Kompilationsprozess, nicht jedoch das Deployment. Das neue Setup, dass eine Vorkompilierte Version von Unicorn in einen gemeinsamen Ordner (zwischen Docker und Host) legte, stellte sich später als Vorteil heraus, als das Original GitHub Repository mit allem Quellcode verschwand.
 
 
-## Architektur der MiddlewareDie von uns implementierte Middleware ist ein mit Django aufgesetzterWebserver, der die jeweiligen REST-APIs miteinander verbindet.### OAuthUm auf die API von ProcessMaker zugreifen zu können, muss sich eine Anwendungerst von einem User registrieren lassen und erhält so eine Client ID und Secret.Als dieser User ist dann die Middleware nach erfolgreicher Authentifizierung eingeloggt.Es empfiehlt sich daher einen dezidierten User für diesen Zweck anzulegen, im Folgenden *Unicorn User*,dessen Login-Daten in *unicorn_config.py* eingetragen werden müssen.Mit den Login-Daten und o.g. Client ID und Secret lässt sich dannein Token von ProcessMaker generieren lassen, mit dem sichdie Anwendung bei HTTP Requests authentifizieren kann.Diese Funktionalität ist im Pythonmodul *pm_auth.py* implementiert. Das Tokenwird dabei lokal gespeichert und falls nötig aktualisiert oder neu generiert.Für Unicorn waren keine Maßnahmen zur Authentifizierung nötig.### APIsDie API von ProcessMaker gliedert sich in drei Bereiche:> * Administration> * Designer> * CasesErsterer dient dazu User, Gruppen, Rollen und Systemeinstellungen von ProcessMakerzu verwalten. Dieser Aspekt wird von unserer Middleware nicht benutzt.Der Bereich Designer stellt Endpunkte bereit mit denen man Prozessmodelleverwalten und bearbeiten kann.Im Prototyp haben wir Teile davon verwendet, um die Tasks aufzulisten, mit denenman einen neuen Prozessablauf starten kann.Diese Funktionalität wird so nicht mehr benötigt, allerdings brauchen wir dafürdie Möglichkeit die Beschreibung von einem modellierten Task auszulesen, wassich über diesen Bereich der API realisieren lässt.Der letzte Bereich, Cases, ist der wohl wichtigste für unsere Anwendung.Hier sind alle Endpunkte veranlagt mit denen man Prozessabläufe steuern kannund Prozessvariablen ein- und auslesen kann.Im Modul *pm_wrapper.py* sind die von uns benötigten Endpunkte gekapselt.Die API von Unicorn ist etwas simpler zu bedienen.Es lassen sich bequem Events posten, EventTypes und EventQueries erstellen,bearbeiten und löschen und für letztere eine Callback URL angeben.Implementiert ist die Schnittstelle im Modul *unicorn_wrapper.py*.Für ProcessMaker gibt es im dazugehörigen Wiki eine extensive Dokumentationder Endpunkte, wohingegen wir für Unicorn nichts Vergleichbares finden konnten.Glücklicherweise sind in den Unit-Test von Unicorn Beispiele, die dieBedienung der API hinreichend erklären.### Konfiguration von ProcessMakerIn einem Prozessmodell müssen diejenigen Tasks, die als Schnittstelle zu Unicorn dienen,dem Unicorn User zugewiesen werden damit sie in dessen Inbox erscheinen.Ist ein solcher Task in einem Prozessablauf erreicht, kann die Middleware beim Pullen der offenen Cases somit feststellen, ob ein neues Event erzeugt werden soll.Damit ein Mapping zwischen den Tasks und EventTypes möglich ist und die Middleware weiß, wie sie mit dem Case umgehen soll, ist es nötig Informationen bereits im Modell an den Task zu hängen. Dafür dient uns das Description-Feld von den Tasks, welches wir über die Designer-API auslesen können. Erwartet wird von unserer Anwendung, dass sich dort ein JSON befindet, das beispielsweise so aussehen könnte:
+## Architektur der Middleware
+
+Die von uns implementierte Middleware ist ein mit Django aufgesetzter
+Webserver, der die jeweiligen REST-APIs miteinander verbindet.
+
+### Initiales Setup
+
+Im Verzeichnis `connector/pmucon/config` befinden sich drei Beispiel-
+Konfigurationsdateien die an die lokale Umgebung angepasst werden müssen.
+Es sind dann lediglich die drei Container mit dem Befehl `docker-compose up --build`
+zu kompilieren und starten.
+
+### OAuth
+Um auf die API von ProcessMaker zugreifen zu können, muss sich eine Anwendung
+erst von einem User registrieren lassen und erhält so eine Client ID und Secret.
+Als dieser User ist dann die Middleware nach erfolgreicher Authentifizierung eingeloggt.
+Es empfiehlt sich daher einen dezidierten User für diesen Zweck anzulegen, im Folgenden *Unicorn User*,
+dessen Login-Daten in *unicorn_config.py* eingetragen werden müssen.
+Mit den Login-Daten und o.g. Client ID und Secret lässt sich dann
+ein Token von ProcessMaker generieren lassen, mit dem sich
+die Anwendung bei HTTP Requests authentifizieren kann.
+Diese Funktionalität ist im Pythonmodul *pm_auth.py* implementiert. Das Token
+wird dabei lokal gespeichert und falls nötig aktualisiert oder neu generiert.
+
+Für Unicorn waren keine Maßnahmen zur Authentifizierung nötig.
+
+### APIs
+Die API von ProcessMaker gliedert sich in drei Bereiche:
+> * Administration
+> * Designer
+> * Cases
+
+Ersterer dient dazu User, Gruppen, Rollen und Systemeinstellungen von ProcessMaker
+zu verwalten. Dieser Aspekt wird von unserer Middleware nicht benutzt.
+Der Bereich Designer stellt Endpunkte bereit mit denen man Prozessmodelle
+verwalten und bearbeiten kann.
+Im Prototyp haben wir Teile davon verwendet, um die Tasks aufzulisten, mit denen
+man einen neuen Prozessablauf starten kann.
+Diese Funktionalität wird so nicht mehr benötigt, allerdings brauchen wir dafür
+die Möglichkeit die Beschreibung von einem modellierten Task auszulesen, was
+sich über diesen Bereich der API realisieren lässt.
+Der letzte Bereich, Cases, ist der wohl wichtigste für unsere Anwendung.
+Hier sind alle Endpunkte veranlagt mit denen man Prozessabläufe steuern kann
+und Prozessvariablen ein- und auslesen kann.
+Im Modul *pm_wrapper.py* sind die von uns benötigten Endpunkte gekapselt.
+
+Die API von Unicorn ist etwas simpler zu bedienen.
+Es lassen sich bequem Events posten, EventTypes und EventQueries erstellen,
+bearbeiten und löschen und für letztere eine Callback URL angeben.
+Implementiert ist die Schnittstelle im Modul *unicorn_wrapper.py*.
+
+Für ProcessMaker gibt es im dazugehörigen Wiki eine extensive Dokumentation
+der Endpunkte, wohingegen wir für Unicorn nichts vergleichbares finden konnten.
+Glücklicherweise sind in den Unit-Test von Unicorn Beispiele, die die
+Bedienung der API hinreichend erklären.
+
+
+### Konfiguration von ProcessMaker
+
+In einem Prozessmodell müssen diejenigen Tasks, die als Schnittstelle zu Unicorn dienen,
+dem Unicorn User zugewiesen werden damit sie in dessen Inbox erscheinen.
+Ist ein solcher Task in einem Prozessablauf erreicht, kann die Middleware beim Pullen der offenen Cases
+somit feststellen, ob ein neues Event erzeugt werden soll.
+
+Damit ein Mapping zwischen den Tasks und EventTypes möglich ist und die Middleware weiß, wie sie mit dem Case umgehen soll,
+ist es nötig Informationen bereits im Modell an des Task zu hängen. Dafür dient uns das Description-Feld von den Tasks,
+welches wir über die Designer-API auslesen können.
+Erwartet wird von unserer Anwendung, dass sich dort ein JSON befindet, das beispielsweise so aussehen könnte:
 
 ```json
 {
@@ -143,6 +210,7 @@ Dafür haben wir Cases selber als Klasse modelliert um deren Status festzuhalten
 
 
 ### Konfiguration von Unicorn
+
 Damit die Kommunikation klappt, müssen zunächst *EventTypes* und *EventQueries*
 erstellt werden. Um bei Queries eine Callback URL anzugeben, muss man diese
 über die REST API von Unicorn erstellen und da wir sowieso ein Webserver als
@@ -171,6 +239,68 @@ Sind die Keys *ProUid* und *TasUid* im Ergebnis, wird den entsprechende Task
 gestartet.
 Unabhängig davon werden die restlichen Werte aus dem Ergebnis als Variablen
 an den existierenden oder/und an den neu erzeugten Case weitergegeben.
+
+### Beispiel und Bedienung
+
+An dieser Stelle möchten wir ein Beispiel dafür geben, wie man die implementierte
+Funktionalität verwenden könnte. Das dient außerdem dazu, die Bedienung besser
+zu erklären.
+
+Nachdem die grundlegende Konfiguration vorgenommen ist, erstellen wir in ProcessMaker
+die User *Trainee* und *Supervisor*. Ersterer soll Texte erstellen erstellen können
+die der Supervisor dann überprüfen und ggf. abändern kann.
+Dafür sind zwei Prozesse nötig:
+
+* Proposal
+* Review
+
+In beiden werden die Variablen ID und Text erstellt.
+Im Proposal Prozess gibt es dann einen Task der an den User *Trainee* zugewiesen
+ist gefolgt von einem Task der ein Unicorn Event erzeugen soll.
+Der Review Prozess wird von einem Unicorn-Task gestartet und diesem folgen
+dann ein Task für den *Supervisor* und einer für Unicorn.
+
+Im Unicorn Task aus dem Proposal-Prozess tragen wir folgendes ein:
+```json
+{
+  "blocking": true,
+  "event_type": "Proposal",
+  "start_task": "<Start Task ID vom Review Prozess>",
+  "start_process": "<Review Prozess ID>"
+}
+```
+
+und im intermediate Unicorn Task aus dem Review-Prozess tragen wir ein:
+```json
+{
+  "blocking": false,
+  "event_type": "Review"
+}
+```
+
+Dann erstellen wir über die Weboberfläche von der Middleware die
+EventTypes Proposal und Review, beide mit den Variablen ID und Text.
+Und außerdem folgende EventQueries:
+
+```sql
+SELECT TasUid,ProUid,ID,Text FROM Proposal
+```
+
+und
+
+```sql
+SELECT A.AppUid AS AppUid, A.ID AS ID, B.Text AS Text
+FROM Pattern[ every A=Proposal
+-> B=Review(A.ID = B.ID)]
+```
+
+Erstellt nun der *Trainee* ein Textvorschlag wird dieser als Proposal Event
+an Unicorn weitergeleitet. Die erste Query sorgt dann dafür, dass der
+Review Prozess gestartet wird und der *Supervisor* bekommt so die Möglichkeit
+den Text zu bearbeiten. Lässt er dann den Prozess weiterlaufen wird ein
+Review Event mit der gleichen ID in Unicorn erzeugt. Das sorgt dann durch die
+zweite Query dafür, dass der neue Text in der Variable im ursprünglichen Proposal
+Prozess übernommen wird und der Case dort gerouted wird.
 
 ## Reflektion
 ### NutzbarkeitDie Middleware stellt mit Sicherheit einen validen Prototyp dar. Sie zeigt, dass die Kommunikation zwischen beiden Engines funktioniert, erfordert dabei aber sicherlich noch zu viel menschliche Interaktion. Ein wirklicher Einsatz in einer Produktivumgebung beim jetzigen Stand ist kaum vorstellbar. Durch das einfache Setup via Docker Compose stellt die Middleware, so wie sie momentan ist, eventuell einen guten Testkandidaten dar. Das heißt, sollte jemand in Erwägung ziehen Event-Driven Process Management einzusetzen, scheint unser Projekt ein valider Einstiegspunkt.### Schwächen und PotentialBis die Software in Produktion genommen werden könnte, gibt es einige Features die noch implementiert, beziehungsweise Architekturentscheidungen, die getroffen werden müssten. Der ganze Themenkomplex Sicherheit, hat bei der Entwicklung bisher keine Rolle gespielt. So sind die meisten Passwörter im Klartext in der Konfiguration bzw. im Code und der Einfachheit halber sehr einfach gewählt. (`123456` in der Regel.) Zudem gibt es Sicherheitsschwachpunkte bei den Gemeinsamen Ordnern und den Lese- und Schreibberechtigungen. Ebenso ist der Großteil unseres Projekts auf basierend auf Kommunikation zwischen APIs und Containern. Beide haben sehr großes Potential in verteilten Umgebungen eingesetzt zu werden. Zusätzlich zur Netzwerk-Sicherheit fehlt hier ein kompletter Authentifizierungs-Mechanismus in der Middleware und jegliche Anforderungen an Verlässlichkeit und Stabilität.Ebenso sollte beim der Diskussion der Einsatzgebiete Effizienz eine Rolle spielen. Python ist bekanntlich keine gut skalierende Sprache, CEP arbeitet aber mit sehr hohem Datenaufkommen. Zwar können Container etwas entgegenwirken, dennoch sollte eine stichhaltige Aussage zu Performance getroffen werden können, bevor die Software in Produktion geht. ProcessMaker selber wurde auch nicht auf hohe Datenaufkommen getestet, sodass die Middleware im Zweifelsfall sogar als Puffer wirken müsste. Die nötige Funktionalität dafür ist bisher aus noch nicht vorhanden und im Zweifelsfalls nochmal ein eigenes Projekt in sich.Nicht zuletzt um effizienter zu arbeiten, aber auch um Dopplungen in Code zu vermeiden, ist auch die Entscheidung ein Add-On statt einer Middleware zu bauen eine Überlegung wert. Die API von ProcessMaker zu erweitern und Endpunkte für Events, sowie Callbacks zu implementieren, um direkt mit Unicorn kommunizieren zu können, sollte zwar nicht einfacher, aber sicherlich auch ein legitimer weg zu Event-Driven Process Management sein. Vorteil der Middleware hingegen ist ein gewisses Maß an Flexibilität. Da die Software auf beiden Seiten mit Fassaden (Wrappern) arbeitet, ist es mit relativer Leichtigkeit möglich, eine der beiden Engines auszutauschen. Voraussetzung dafür ist, dass die austauschende Engine eine REST-API bietet. Wie umfangreich der Rück-Umstieg von Aktivitäten auf Events ist, hängt dabei viel von der gegebenen API ab. Sicherlich müssen die Abläufe innerhalb der Middleware geändert werden (denn das Routen fällt mit großer Wahrscheinlichkeit weg) aber die Zuordnungsfunktion von Komplexem Event zu Event in Instanziiertem Prozess bleibt erhalten.Das Level an Interaktion, welches zur Kommunikation zwischen den beiden Engins nötig ist, müsste sicherlich auch Automatisiert werden. Denkbar ist, viel mehr Konfiguration in die Prozessmodellierung zu schieben, sodass bereits beim Anlegen des Projekts in ProcessMaker definiert wird, was beim erhalten eines Komplexen Events passieren soll.Letztlich liegt noch Optimierungspotential in den Konfigurationsdateien. Zur gemeinsamen Kommunikation müssen die beiden Engines vieles voneinander wissen und bisher ist dieses Wissen an mehreren Stellen gleichzeitig abgelegt. Zusammenführung der Konfigurationsdateien und ein Automatisiertes Setup dieser scheint sinnvoll und gibt ein einheitlicheres Software Produkt.## AblaufIm Verlauf des Projekts gab es im Team keine größeren Beeinträchtigungen. Der Anfang war, wie erwartet und üblich, etwas langsam, da sich alle Teammitglieder einfinden mussten und zwischenzeitlich gab es kleiner zeitliche Schwierigkeiten, aber die Kommunikation und Absprache hat in neunundneunzig Prozent der Fälle hervorragend funktioniert.
