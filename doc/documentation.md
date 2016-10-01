@@ -93,51 +93,65 @@ Da Events auch seitens ProcessMaker über einen Pull-Mechanismus implementiert w
 Tasks ist die Bezeichnung die ProcessMaker für BPMN Aktivitäten nutzt. Sie stellen zu erledigende Aufgaben dar und sind daher semantisch nicht ganz akutat auf Komplexe Events abzubilden. Sie sind in ProcessMaker konkreten Nutzern oder Nutzergruppen des Systems zugeordnet und müssen entland des Prozessablaufs gerouted werden. Sowohl das Abarbeiten als auch das routen sind via REST-API verfügbar. Diese ist online durchweg gut dokumentiert und die Vermutung, dass die ProcessMaker eigene Weboberfläche selber über diese API mit der Execution Engine kommuniziert, ist sogar naheliegend. Obwohl dies nicht der syntaktisch korrekte Ansatz ist, schien er der einzige der im Rahmen des Projektes als realistisch umsetzbar einzustufen war. 
 
 ### Prototyp für ProcessMaker
-Da der generelle Ansatz zur Kommunikation mit ProcessMaker bereits eine Hürde war, haben wir uns dann dazu entschieden zunächst einen Prototyp zu implementieren um damit die Möglichkeiten der API auszuloten und zu testen. Desweiteren diente dies auch dazu unseren Zwischenstand und das bis dahin gesammelte Wissen über unsere spezifische Process Execution Engine den anderen Gruppen vorzustellen und zu demonstrieren.
+Da der generelle Ansatz zur Kommunikation mit ProcessMaker bereits eine Hürde war, haben wir uns dazu entschieden zunächst einen Prototyp zu implementieren, um damit die Möglichkeiten der API zu testen und einen Proof-of-Concept zu haben. Desweiteren diente dies auch dazu, unseren Zwischenstand und das bis dahin gesammelte Wissen über unsere spezifische Process Execution Engine den anderen Gruppen vorzustellen und zu demonstrieren. 
 
-Um flexibel und interaktiv zu sein haben wir als Programmiersprache für den Prototyp Python gewählt.
-Das stellte sich als eine gute Wahl heraus, da wir so zügig zu einem funktionierenden Ergebnis gekommen sind.
-Außerdem haben wir damit einen guten Grundstein für die eigentliche Middleware, die das Ziel des Projektes war, gelegt.
+Um flexibel und interaktiv zu sein haben wir als Programmiersprache für den Prototyp `Python` gewählt. Da alle Teammitglieder die gleiche Version lokal hatten, schien es kein Problem, den Prototypen vorerst lokal zu verwenden. `Python` stellte sich als eine gute Wahl heraus, da wir so zügig zu einem funktionierenden Ergebnis kamen. Mit der `requests` Bibliothek ließ sich unkompliziert mit der API von ProcessMaker kommunizieren. Außerdem haben wir damit einen guten Grundstein für die eigentliche Middleware, die das Ziel des Projektes war, gelegt.
 
 ### Django Middleware
-Bis zu diesem Zeitpunkt war lediglich die Seite richtung ProcessMaker abgedeckt.
+Bis zu diesem Zeitpunkt war lediglich die Seite in Richtung ProcessMaker abgedeckt.
 Da man beim Registrieren von EventQueries in Unicorn einen HTTP Endpoint als Callback angeben musste, war klar, dass wir irgendeine Form von HTTP Server anbieten mussten.
-Wir wollten Teile vom Prototyp wiederverwenden und uns nicht damit aufhalten, ein Callback-Interface für Unicorn selber zu implementieren, also haben wir uns dafür entschieden einen Django-Server aufzusetzen.
+Wir wollten Teile vom Prototyp wiederverwenden und uns nicht damit aufhalten, ein Callback-Interface für Unicorn selber zu implementieren, also haben wir uns dafür entschieden einen Django-Server aufzusetzen. 
 Das hatte außerdem den Vorteil, dass man die Middleware selber leicht über eine Weboberfläche bedienen konnte.
 
-### Obstacles
-> **TODO** (von Lukas)
-> 
-> * Dieser Abschnitt eventuell eher unter Reflektion?
-> 
-> **Anmerkung** (von Alex)
-> 
-> Würde ich nicht machen, dort ist eher die Reflektion des Scopes und des abgeschlossenen Projekts. Das hier sind eher Beschreibungen des Ablaufes und Entschdieungen die getorffen wurden um zum Ziel zu kommen. (Evtl. kann man das dann nochmal später aufgreifen, ob man es nicht hätte besser lösen können.)
+### Schwierigkeiten
+#### ProcessMaker
+Im Verlaufe des Projekts kam es immer wieder zu Verzögerungen, meist durch Fehler in der Community Version von ProcessMaker. Abgesehen von den fehlenden Abhängigkeiten während des Setups, schienen einige MySQL-Operationen nicht getestet worden sein. <br>
+Nach erfolgeicher Installation von ProcessMaker, wird man als Admin durch ein paar Konfigurations-Schritte geleitet, die zwar funktionierten, aber nicht persistent waren. Bei der Initalisierung beim ersten Start wurde eine Tabelle nicht in die Datenbank geschrieben, weil die zuständige Query fehlschlug. Das Datumsformat war als `0000-00-00 00:00:00` eingetragen, obwohl die Datenbank `NULL` erwartet hat. Die zuständige Datei `project_root/processmaker/rbac/engine/data/mysql/insert.sql` sah wie folgt aus.
 
+```sql
+('00000000000000000000000000000006','PM_ALLCASES','2008-04-30 00:00:00',
+	'2008-04-30 00:00:00',1,'00000000000000000000000000000002'),
+# ...
+('00000000000000000000000000000009','PM_SUPERVISOR','0000-00-00 00:00:00',
+	'0000-00-00 00:00:00',1,'00000000000000000000000000000002'),
+('00000000000000000000000000000010','PM_SETUP_ADVANCE','0000-00-00 00:00:00',
+	'0000-00-00 00:00:00',1,'00000000000000000000000000000002'),
+# ...
+```
+Gändert sah die datei folgendermaßen aus.
 
-* ProcessMaker
-	* Buggy community Version, especially MySQL errors.
-		* Login DB didn't install
-		* Query for registering OAuth Apps threw an error
-		* Wrong DB connector listed in system requirements
-	* Different nameing conventions
-	* Events only accessible through Cron Jobs
-		* Not a problem per se but much more difficult due to containerized setup
-			* Requires a lot of scripting, for automated setup
-		* Solution: We ended up using the so called Tasks due to them being available through the API
-	* API
-		* Even though it is quite powerful and well documented, it took some time to figure out that some keys are named doffernt but actially mean the same. 
-* Unicorn 
-	* The given Docker config wouldn't run on OS X (Compilation: Yes, Deployment: No)
-	* Poorly Documented
-	* Source and Doc removed from GitHub during the end of the Project. Good thing, local Backups exist. ;-)
-* External Circumstances
-	* No severe issues. 
-	* Good communication => Lightweight and instant
-	* Few resources timewise
-		* Absence from inter-team meeting
-			* turned out not to be too bad. The Teams didn't intersect too much
-		* In the beginning we could sometimes only manage to have 1 team member present. 
+```sql
+('00000000000000000000000000000006','PM_ALLCASES','2008-04-30 00:00:00',
+	'2008-04-30 00:00:00',1,'00000000000000000000000000000002'),
+# ...
+('00000000000000000000000000000009','PM_SUPERVISOR',NULL,NULL,
+	1,'00000000000000000000000000000002'),
+('00000000000000000000000000000010','PM_SETUP_ADVANCE',NULL,NULL,
+	1,'00000000000000000000000000000002'),
+# ...
+```
+
+Ein weiterer Fehler war die Query, die für die Registrierung von OAuth Apps zuständig war. Das besondere hierbei war, dass auch keine Fehlermeldung angezeigt wurde. Lediglich durch abfangen des AJAX Returns in der Console, ließ sich feststellen, dass es sich um ein Invalides MySQL Statement handelte. Dem dynamisch in PHP zusammengesetzte Query fehlte eine `GROUP` Column. Die Funktion 
+
+```php
+public function getAll($arrayFilterData = array(), $sortField = "", 
+	$sortDir = "", $start = 0, $limit = 25) {
+	//...
+	}
+```
+schlug fehl. 
+
+Hinzufügen der Zeile 
+
+```php
+$criteriaCount->addGroupByColumn("UPPER(". OauthClientsPeer::CLIENT_NAME .")");
+```
+
+hat das Problem, zumindest für unsere Zwecke, gelöst. Danach war es möglich neue OAuth Applications zu registrieren. 
+
+####Unicorn
+Auch Unicorn stellte einige Schwierigkeiten dar, nicht zuletzt, da die Dokumentation sehr spärlich war. Die im `shared` Repository bereitstehende Docker-Installation lief auf OS X nicht durch. Lediglich der Kompilationsprozess, nicht jedoch das Deployment. Das neue Setup, dass eine Vorkompilierte Version von Unicorn in einen gemeinsamen Ordner (zwischen Docker und Host) legte, stellte sich später als Vorteil heraus, als das original GitHub Repository mit allem Quellcode verschwand. 
+
 
 
 ## Architektur des ProcessMaker-Unicorn-Connectors
@@ -237,6 +251,20 @@ TODO: Entweder hier oder im Code besser dokumentieren (oder beides).
 
 ### Engine-Spezifisches
 Durch den implementieren REST basieren Wrapper für ProcessMaker, ließe sich, mit vergleichsweise geringem Aufwand, jede andere REST fähige Software anbinden. Dann allerdings ebenso via Tasks und nicht Events. Je nach eingesetzter Engine, der Mächtigkeit der dort implementieren Events und deren Erreichbarkeit via API, varriert der Aufwand sehr stark. 
+
+
+> **Aus "Schwierigkeiten"**
+> 
+> * External Circumstances
+	* No severe issues. 
+	* Good communication => Lightweight and instant
+	* Few resources timewise
+		* Absence from inter-team meeting
+			* turned out not to be too bad. The Teams didn't intersect too much
+		* In the beginning we could sometimes only manage to have 1 team member present. 
+
+
+
 
 ## Dokumentierter Code
 
